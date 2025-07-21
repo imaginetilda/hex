@@ -1,6 +1,7 @@
 import tkinter as tk
 import random
 from tkinter import *
+import re #regular expression module
 
 # main
 class HexGame(tk.Tk):
@@ -51,18 +52,14 @@ class StandardGame(tk.Frame):
         self.guessColour = "grey"
         self.focus = 0
 
-        self.grid_rowconfigure(0, weight=0)
-        self.grid_rowconfigure(1, weight=0)
-        self.grid_rowconfigure(2, weight=0)
-        self.grid_rowconfigure(3, weight=0)
-        self.grid_rowconfigure(4, weight=1) # for padding at bottom
+        for i in range(0, 7):
+            self.grid_columnconfigure(i, weight=0)
+        self.grid_rowconfigure(8, weight=0) # for padding at bottom
+
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=0)
-        self.grid_columnconfigure(2, weight=0)
-        self.grid_columnconfigure(3, weight=0)
-        self.grid_columnconfigure(4, weight=0)
-        self.grid_columnconfigure(5, weight=0)
-        self.grid_columnconfigure(6, weight=1) # for padding at right
+        for i in range(1, 7):
+            self.grid_columnconfigure(i, weight=0)
+        self.grid_columnconfigure(8, weight=1)# for padding at right
 
         self.create_canvas()
         self.create_target_box()
@@ -88,22 +85,49 @@ class StandardGame(tk.Frame):
         # create the entry widget
         # the validate='key' means validation will occur on every key press.
         # the validatecommand is the function to call for validation.
-        entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        """ entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryR1.grid(row=3, column=1, padx=5, pady=2, sticky='ew') # sticky='ew' makes it stretch horizontally
-        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryR2.grid(row=3, column=2, padx=5, pady=2, sticky='ew')
-        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryG1.grid(row=3, column=3, padx=5, pady=2, sticky='ew')
-        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryG2.grid(row=3, column=4, padx=5, pady=2, sticky='ew')
-        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryB1.grid(row=3, column=5, padx=5, pady=2, sticky='ew')
-        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
-        entryB2.grid(row=3, column=6, padx=5, pady=2, sticky='ew')
+        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+        entryB2.grid(row=3, column=6, padx=5, pady=2, sticky='ew') """
 
         # optional: set initial focus to the entry widget
-        entryR1.focus_set()
+        #entryR1.focus_set()
 
+
+        self.entries = [] # To store references to our Entry widgets
+        self.entry_vars = [] # To store their associated StringVars
+        for i in range(6):
+            # Create a StringVar for each entry
+            var = tk.StringVar()
+            self.entry_vars.append(var)
+
+            # Create the Entry widget
+            entry = tk.Entry(self, textvariable=var, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+            entry.grid(row=3, column=i+1, padx=5, pady=2, sticky='ew')
+            self.entries.append(entry)
+
+            # Bind the <KeyRelease> event to our advance_focus function
+            # <KeyRelease> is generally preferred over <KeyPress> because
+            # the textvariable will have been updated by the time KeyRelease fires.
+            entry.bind("<KeyRelease>", lambda event, idx=i: self.advance_focus(event, idx))
+
+            # Optional: Bind <BackSpace> or <Delete> to move backward
+            entry.bind("<BackSpace>", lambda event, idx=i: self.regress_focus(event, idx))
+            entry.bind("<Delete>", lambda event, idx=i: self.regress_focus(event, idx))
+
+
+        # Set initial focus to the first entry
+        self.entries[0].focus_set()
+
+        
         # create a button to retrieve the input
         submit_button = tk.Button(self, text="Get Character", command=self.get_input)
         submit_button.grid(row=10, column=1, columnspan=6, padx=5, pady=10, sticky='w') # sticky='ew' makes it stretch horizontally
@@ -168,7 +192,7 @@ class StandardGame(tk.Frame):
 
     def validate_single_char(self, input_text):
         '''validation function to ensure only one character is entered'''
-        if len(input_text) <= 1:
+        if (len(input_text) <= 1) and (re.fullmatch(r"^[a-fA-F0-9-]*$", input_text)):
             return True
         else:
             return False
@@ -177,6 +201,32 @@ class StandardGame(tk.Frame):
         '''function to retrieve the single character entered'''
         char = self.r1Guess.get()
         print(f"You entered: {char}")
+
+    def advance_focus(self, event, current_idx):
+        # Get the current text in the entry
+        current_text = self.entry_vars[current_idx].get()
+
+        # If a character was entered (and it's not empty after deletion/backspace)
+        # and it's a single character (ensures we don't advance on second char in same box if width > 1)
+        # and we are not on the last entry
+        if current_text and len(current_text) == 1 and current_idx < len(self.entries) - 1:
+            # Move focus to the next entry
+            self.entries[current_idx + 1].focus_set()
+            # Optionally select the text in the next box for easy overwriting
+            self.entries[current_idx + 1].selection_range(0, tk.END)
+
+        # Optional: You might want to prevent typing more than one character.
+        # You can combine this with validation as shown in previous answers.
+        # For this example, we're just checking the length for advancement.
+
+    def regress_focus(self, event, current_idx):
+        # If Backspace or Delete was pressed and the entry is empty (or about to become empty)
+        if not self.entry_vars[current_idx].get() and current_idx > 0:
+            # Move focus to the previous entry
+            self.entries[current_idx - 1].focus_set()
+            # Optionally move cursor to end of previous box
+            self.entries[current_idx - 1].icursor(tk.END)
+
 
 
 # main menu
@@ -195,12 +245,12 @@ class MenuScreen(tk.Frame):
 
         # title Label
         title_label = tk.Label(self, text="HEX-A-GUESS-A",
-                               font=("Comic Sans MS", 36, "bold"), fg="black", bg="white")
+                               font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
         title_label.grid(row=0, column=0, pady=(50, 20), sticky="s") # padded at top, sticks to south
 
         # new game button
         new_game_button = tk.Button(self, text="New Game",
-                                     font=("Comic Sans MS", 20), bg="light green", fg="black",
+                                     font=("Arial Rounded MT Bold", 20), bg="light green", fg="black",
                                      activebackground="dark green", activeforeground="white",
                                      width=15, height=2, relief="raised", bd=4,
                                      command=self.master.show_new_game_screen)
@@ -226,7 +276,7 @@ class NewGameScreen(tk.Frame):
 
         # standard Button
         standard_button = tk.Button(difficulty_buttons_frame, text="Standard",
-                                     font=("Comic Sans MS", 16), bg="light blue", fg="black",
+                                     font=("Arial Rounded MT Bold", 16), bg="light blue", fg="black",
                                      activebackground="dark blue", activeforeground="white",
                                      width=10, height=1, relief="raised", bd=3,
                                      command=lambda: self.master.show_standard_game())
@@ -234,7 +284,7 @@ class NewGameScreen(tk.Frame):
 
         # back button
         back_button = tk.Button(self, text="Back",
-                                 font=("Comic Sans MS", 14), bg="light blue", fg="black",
+                                 font=("Arial Rounded MT Bold", 14), bg="light blue", fg="black",
                                  activebackground="dark blue", activeforeground="white",
                                  width=15, relief="flat", bd=2,
                                  command=self.master.show_menu_screen)
