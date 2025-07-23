@@ -8,8 +8,8 @@ class HexGame(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Game Menu")
-        self.geometry("500x900")
-        # self.resizable(False, False)
+        self.geometry("800x600")
+       # self.resizable(False, False)
 
         # configure grid for centering content
         self.grid_rowconfigure(0, weight=1)
@@ -120,9 +120,11 @@ class StandardGame(tk.Frame):
             # the textvariable will have been updated by the time KeyRelease fires.
             entry.bind("<KeyRelease>", lambda event, idx=i: self.advance_focus(event, idx))
 
-            # Optional: Bind <BackSpace> or <Delete> to move backward
+            # Bind <BackSpace> or <Delete> to move backward
             entry.bind("<BackSpace>", lambda event, idx=i: self.regress_focus(event, idx))
             entry.bind("<Delete>", lambda event, idx=i: self.regress_focus(event, idx))
+            # Bind <Return> (Enter button) to submit the entry
+            entry.bind("<Return>", lambda event, idx=i: self.submit_entry(event, idx))
 
 
         # Set initial focus to the first entry
@@ -224,6 +226,24 @@ class StandardGame(tk.Frame):
             # Optionally move cursor to end of previous box
             self.entries[current_idx - 1].icursor(tk.END)
 
+    def submit_entry(self, event, current_idx):
+        # If Enter was clicked first validate the entries so far to make sure each box has a valid entry,
+        #  then if it has update the grid, check if the game has finished, if it hasn't clear the entry boxes
+        print(f"You pressed Enter") 
+
+        #Validate entries are all full
+
+        #If everything is ok combine the boxes and check it against the target colours. 
+        #Calculate the error margins for each colour
+
+        #If all the colours aren't correct move everything in the answer grid down 1, append the latest answer to the grid
+
+        #If the player has used up their guesses then game over
+
+        #If the game is still going then clear the guess input boxes and put focus back into the first box
+
+
+
     def create_guess_grid(self):
         #For each guess line there's an indicator row (up or down), and a row below that contains the guess
         self.guesses = [] # To store references to our Entry widgets
@@ -241,7 +261,13 @@ class StandardGame(tk.Frame):
                 # Create the Entry widget
                 guess = tk.Entry(self, textvariable=var, state="disabled", width=2, font=("Helvetica", 25))
                 guess.grid(row=(2*i)+5, column=j+1, padx=5, pady=2, sticky='ew')
-                self.guesses.append(guess)       
+                self.guesses.append(guess)     
+
+                
+
+    
+
+
 
 
 
