@@ -48,9 +48,14 @@ class StandardGame(tk.Frame):
         self.canvasWidth = 400
         self.canvasHeight = 200
 
-        self.targetColour = "grey"
-        self.guessColour = "grey"
+        self.targetColour = "#888888"
+        self.targetRed = "88"
+        self.targetGreen = "88"
+        self.targetBlue = "88"
+        self.guessColour = "#888888"
         self.focus = 0
+        self.guess_count = 0
+        self.max_allowed_guesses = 8
 
         for i in range(0, 7):
             self.grid_columnconfigure(i, weight=0)
@@ -145,7 +150,15 @@ class StandardGame(tk.Frame):
     def create_target_box(self):
         
         # define the color for the box
-        box_color = self.targetColour # can change this to any valid color name or hex code (e.g., "#00FF00" for green)
+        self.targetColour = "#%06x" % random.randint(0, 0xFFFFFF)
+        print(self.targetColour)
+        #We get the RGB values from index 1, because index 0 is hash #
+        self.targetRed = self.targetColour[1:3]
+        self.targetGreen = self.targetColour[3:5]
+        self.targetBlue = self.targetColour[5:7]
+        print(self.targetRed)
+        print(self.targetGreen)
+        print(self.targetBlue)
 
         # draw a rectangle (the "box") on the canvas
         # coordinates are (x1, y1, x2, y2) where (x1, y1) is the top-left corner
@@ -163,7 +176,7 @@ class StandardGame(tk.Frame):
         x2 = 190
         y2 = y1 + box_height
 
-        self.targetBox = self.colourCanvas.create_rectangle(0, 0, 190,190, fill=box_color, outline="", width=0)
+        self.targetBox = self.colourCanvas.create_rectangle(0, 0, 190,190, fill=self.targetColour, outline="", width=0)
 
 
     def create_guess_box(self):
@@ -240,23 +253,27 @@ class StandardGame(tk.Frame):
             print("Entries are valid")
 
             #If everything is ok combine the boxes and check it against the target colours. 
+            print(self.entries[0].get(),self.entries[1].get(),self.entries[2].get(),self.entries[3].get(),self.entries[4].get(),self.entries[5].get())
+            guessRed = f"{self.entries[0].get()}{self.entries[1].get()}"
+            guessGreen = f"{self.entries[2].get()}{self.entries[3].get()}"
+            guessBlue = f"{self.entries[4].get()}{self.entries[5].get()}"
 
 
             #Calculate the error margins for each colour
 
             #Move everything in the answer grid down 1, append the latest answer to the grid
 
+
             #If the player has used up their guesses then game over
 
             #If the game is still going then clear the guess input boxes and put focus back into the first box
 
-            
     def validate_entries(self):
         return True    
 
 
 
-
+    
 
     def create_guess_grid(self):
         #For each guess line there's an indicator row (up or down), and a row below that contains the guess
