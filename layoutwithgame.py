@@ -2,13 +2,14 @@ import tkinter as tk
 import random
 from tkinter import *
 import re #regular expression module
+import math
 
 # main
 class HexGame(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Game Menu")
-        self.geometry("800x600")
+        self.geometry("500x900")
        # self.resizable(False, False)
 
         # configure grid for centering content
@@ -91,17 +92,17 @@ class StandardGame(tk.Frame):
         # create the entry widget
         # the validate='key' means validation will occur on every key press.
         # the validatecommand is the function to call for validation.
-        """ entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        """ entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryR1.grid(row=3, column=1, padx=5, pady=2, sticky='ew') # sticky='ew' makes it stretch horizontally
-        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryR2.grid(row=3, column=2, padx=5, pady=2, sticky='ew')
-        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryG1.grid(row=3, column=3, padx=5, pady=2, sticky='ew')
-        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryG2.grid(row=3, column=4, padx=5, pady=2, sticky='ew')
-        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryB1.grid(row=3, column=5, padx=5, pady=2, sticky='ew')
-        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryB2.grid(row=3, column=6, padx=5, pady=2, sticky='ew') """
 
         # optional: set initial focus to the entry widget
@@ -116,7 +117,7 @@ class StandardGame(tk.Frame):
             self.entry_vars.append(var)
 
             # Create the Entry widget
-            entry = tk.Entry(self, textvariable=var, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Helvetica", 25))
+            entry = tk.Entry(self, textvariable=var, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
             entry.grid(row=3, column=i+1, padx=5, pady=2, sticky='ew')
             self.entries.append(entry)
 
@@ -156,11 +157,6 @@ class StandardGame(tk.Frame):
         self.targetRed = int(self.targetColour[1:3], 16)
         self.targetGreen = int(self.targetColour[3:5], 16)
         self.targetBlue = int(self.targetColour[5:7], 16)
-        print(self.targetRed)
-        hex_representation = hex(self.targetRed)
-        print(f"The hexadecimal representation of {self.targetRed} is: {hex_representation}")
-        print(self.targetGreen)
-        print(self.targetBlue)
 
         # draw a rectangle (the "box") on the canvas
         # coordinates are (x1, y1, x2, y2) where (x1, y1) is the top-left corner
@@ -254,12 +250,18 @@ class StandardGame(tk.Frame):
 
             #If everything is ok combine the boxes and check it against the target colours. 
             print(self.entries[0].get(),self.entries[1].get(),self.entries[2].get(),self.entries[3].get(),self.entries[4].get(),self.entries[5].get())
-            guessRed = f"0x{self.entries[0].get()}{self.entries[1].get()}"
-            guessGreen = f"0x{self.entries[2].get()}{self.entries[3].get()}"
-            guessBlue = f"0x{self.entries[4].get()}{self.entries[5].get()}"
-            differenceRed = guessRed - self.targetRed
+            guessRed = int(f"{self.entries[0].get()}{self.entries[1].get()}", 16)
+            guessGreen = int(f"{self.entries[2].get()}{self.entries[3].get()}", 16)
+            guessBlue = int(f"{self.entries[4].get()}{self.entries[5].get()}", 16)
+           
 
             #Calculate the error margins for each colour
+            differenceRed = guessRed - self.targetRed
+
+            print(differenceRed)
+            print(hex(differenceRed))
+            errorMarginRed = self.error_margin_indicator(differenceRed)
+            print(errorMarginRed)   
 
             #Move everything in the answer grid down 1, append the latest answer to the grid
 
@@ -290,10 +292,22 @@ class StandardGame(tk.Frame):
                 self.guess_vars.append(var)
 
                 # Create the Entry widget
-                guess = tk.Entry(self, textvariable=var, state="disabled", width=2, font=("Helvetica", 25))
+                guess = tk.Entry(self, textvariable=var, state="disabled", width=2, font=("Arial Rounded MT Bold", 25))
                 guess.grid(row=(2*i)+5, column=j+1, padx=5, pady=2, sticky='ew')
-                self.guesses.append(guess)     
+                self.guesses.append(guess)   
 
+                  
+    def error_margin_indicator(self, number):
+        # Calculates the base-3 logarithm of the absolute of a number and rounds it up to the next integer.
+        # If the original number is negative it then returns this value as a negative. 
+        # Need to add 1, since if you are out by 1 then log3 will be zero, and the guess is still not quite correct
+
+        if number == 0:
+            return 0
+        elif number < 0:
+            return -1 * math.ceil(math.log2(abs(number))) + 1
+        else:
+            return math.ceil(math.log(number, 3)) + 1
                 
 
     
@@ -318,12 +332,12 @@ class MenuScreen(tk.Frame):
 
         # title Label
         title_label = tk.Label(self, text="HEX-A-GUESS-A",
-                               font=("Comic Sans MS", 36, "bold"), fg="black", bg="white")
+                               font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
         title_label.grid(row=0, column=0, pady=(50, 20), sticky="s") # padded at top, sticks to south
 
         # new game button
         new_game_button = tk.Button(self, text="New Game",
-                                     font=("Comic Sans MS", 20), bg="light green", fg="black",
+                                     font=("Arial Rounded MT Bold", 20), bg="light green", fg="black",
                                      activebackground="dark green", activeforeground="white",
                                      width=15, height=2, relief="raised", bd=4,
                                      command=self.master.show_new_game_screen)
@@ -349,7 +363,7 @@ class NewGameScreen(tk.Frame):
 
         # standard Button
         standard_button = tk.Button(difficulty_buttons_frame, text="Standard",
-                                     font=("Comic Sans MS", 16), bg="light blue", fg="black",
+                                     font=("Arial Rounded MT Bold", 16), bg="light blue", fg="black",
                                      activebackground="dark blue", activeforeground="white",
                                      width=10, height=1, relief="raised", bd=3,
                                      command=lambda: self.master.show_standard_game())
@@ -357,7 +371,7 @@ class NewGameScreen(tk.Frame):
 
         # back button
         back_button = tk.Button(self, text="Back",
-                                 font=("Comic Sans MS", 14), bg="light blue", fg="black",
+                                 font=("Arial Rounded MT Bold", 14), bg="light blue", fg="black",
                                  activebackground="dark blue", activeforeground="white",
                                  width=15, relief="flat", bd=2,
                                  command=self.master.show_menu_screen)
