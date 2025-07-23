@@ -8,8 +8,8 @@ class HexGame(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Game Menu")
-        self.geometry("800x600")
-        self.resizable(False, False)
+        self.geometry("500x900")
+        # self.resizable(False, False)
 
         # configure grid for centering content
         self.grid_rowconfigure(0, weight=1)
@@ -64,18 +64,19 @@ class StandardGame(tk.Frame):
         self.create_canvas()
         self.create_target_box()
         self.create_guess_box()
+        self.create_guess_grid()
 
-        # create a button widget
-        button = tk.Button(self, text="Click Me!", command=self.button_click)
-        button.grid(row=2, column=1, columnspan=6, padx=5, pady=10, sticky='w') # sticky='ew' makes it stretch horizontally
+        # # create a button widget
+        # button = tk.Button(self, text="Click Me!", command=self.button_click)
+        # button.grid(row=2, column=1, columnspan=6, padx=5, pady=10, sticky='w') # sticky='ew' makes it stretch horizontally
 
         # create a StringVar to hold the entry's text
-        self.r1Guess = tk.StringVar()
-        self.r2Guess = tk.StringVar()
-        self.g1Guess = tk.StringVar()
-        self.g2Guess = tk.StringVar()
-        self.b1Guess = tk.StringVar()
-        self.b2Guess = tk.StringVar()
+        # self.r1Guess = tk.StringVar()
+        # self.r2Guess = tk.StringVar()
+        # self.g1Guess = tk.StringVar()
+        # self.g2Guess = tk.StringVar()
+        # self.b1Guess = tk.StringVar()
+        # self.b2Guess = tk.StringVar()
 
         # register the validation command
         # the %P is a special Tkinter placeholder that represents the value of the entry
@@ -85,17 +86,17 @@ class StandardGame(tk.Frame):
         # create the entry widget
         # the validate='key' means validation will occur on every key press.
         # the validatecommand is the function to call for validation.
-        """ entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+        """ entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
         entryR1.grid(row=3, column=1, padx=5, pady=2, sticky='ew') # sticky='ew' makes it stretch horizontally
-        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
         entryR2.grid(row=3, column=2, padx=5, pady=2, sticky='ew')
-        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
         entryG1.grid(row=3, column=3, padx=5, pady=2, sticky='ew')
-        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
         entryG2.grid(row=3, column=4, padx=5, pady=2, sticky='ew')
-        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
         entryB1.grid(row=3, column=5, padx=5, pady=2, sticky='ew')
-        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
         entryB2.grid(row=3, column=6, padx=5, pady=2, sticky='ew') """
 
         # optional: set initial focus to the entry widget
@@ -110,7 +111,7 @@ class StandardGame(tk.Frame):
             self.entry_vars.append(var)
 
             # Create the Entry widget
-            entry = tk.Entry(self, textvariable=var, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
+            entry = tk.Entry(self, textvariable=var, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Helvetica", 25))
             entry.grid(row=3, column=i+1, padx=5, pady=2, sticky='ew')
             self.entries.append(entry)
 
@@ -126,12 +127,8 @@ class StandardGame(tk.Frame):
 
         # Set initial focus to the first entry
         self.entries[0].focus_set()
-
         
-        # create a button to retrieve the input
-        submit_button = tk.Button(self, text="Get Character", command=self.get_input)
-        submit_button.grid(row=10, column=1, columnspan=6, padx=5, pady=10, sticky='w') # sticky='ew' makes it stretch horizontally
-
+       
     def play_game(self):
         pass
 
@@ -227,6 +224,25 @@ class StandardGame(tk.Frame):
             # Optionally move cursor to end of previous box
             self.entries[current_idx - 1].icursor(tk.END)
 
+    def create_guess_grid(self):
+        #For each guess line there's an indicator row (up or down), and a row below that contains the guess
+        self.guesses = [] # To store references to our Entry widgets
+        self.guess_vars = [] # To store their associated StringVars
+        for i in range(8):
+            #up/down indicators
+            for j in range(3):
+                label = tk.Label(self, text="<<<<>>>>")
+                label.grid(row=(2*i)+4, column=(2*j)+1,  columnspan=2, padx=5, pady=2, sticky='ew')
+            for j in range(6):
+                # Create a StringVar for each entry
+                var = tk.StringVar()
+                self.guess_vars.append(var)
+
+                # Create the Entry widget
+                guess = tk.Entry(self, textvariable=var, state="disabled", width=2, font=("Helvetica", 25))
+                guess.grid(row=(2*i)+5, column=j+1, padx=5, pady=2, sticky='ew')
+                self.guesses.append(guess)       
+
 
 
 # main menu
@@ -245,12 +261,12 @@ class MenuScreen(tk.Frame):
 
         # title Label
         title_label = tk.Label(self, text="HEX-A-GUESS-A",
-                               font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
+                               font=("Comic Sans MS", 36, "bold"), fg="black", bg="white")
         title_label.grid(row=0, column=0, pady=(50, 20), sticky="s") # padded at top, sticks to south
 
         # new game button
         new_game_button = tk.Button(self, text="New Game",
-                                     font=("Arial Rounded MT Bold", 20), bg="light green", fg="black",
+                                     font=("Comic Sans MS", 20), bg="light green", fg="black",
                                      activebackground="dark green", activeforeground="white",
                                      width=15, height=2, relief="raised", bd=4,
                                      command=self.master.show_new_game_screen)
@@ -276,7 +292,7 @@ class NewGameScreen(tk.Frame):
 
         # standard Button
         standard_button = tk.Button(difficulty_buttons_frame, text="Standard",
-                                     font=("Arial Rounded MT Bold", 16), bg="light blue", fg="black",
+                                     font=("Comic Sans MS", 16), bg="light blue", fg="black",
                                      activebackground="dark blue", activeforeground="white",
                                      width=10, height=1, relief="raised", bd=3,
                                      command=lambda: self.master.show_standard_game())
@@ -284,7 +300,7 @@ class NewGameScreen(tk.Frame):
 
         # back button
         back_button = tk.Button(self, text="Back",
-                                 font=("Arial Rounded MT Bold", 14), bg="light blue", fg="black",
+                                 font=("Comic Sans MS", 14), bg="light blue", fg="black",
                                  activebackground="dark blue", activeforeground="white",
                                  width=15, relief="flat", bd=2,
                                  command=self.master.show_menu_screen)
