@@ -8,7 +8,7 @@ class HexGame(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Game Menu")
-        self.geometry("800x600")
+        self.geometry("500x900")
        # self.resizable(False, False)
 
         # configure grid for centering content
@@ -86,17 +86,17 @@ class StandardGame(tk.Frame):
         # create the entry widget
         # the validate='key' means validation will occur on every key press.
         # the validatecommand is the function to call for validation.
-        """ entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        """ entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryR1.grid(row=3, column=1, padx=5, pady=2, sticky='ew') # sticky='ew' makes it stretch horizontally
-        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryR2.grid(row=3, column=2, padx=5, pady=2, sticky='ew')
-        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryG1.grid(row=3, column=3, padx=5, pady=2, sticky='ew')
-        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryG2.grid(row=3, column=4, padx=5, pady=2, sticky='ew')
-        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryB1.grid(row=3, column=5, padx=5, pady=2, sticky='ew')
-        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Comic Sans MS", 25))
+        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
         entryB2.grid(row=3, column=6, padx=5, pady=2, sticky='ew') """
 
         # optional: set initial focus to the entry widget
@@ -111,7 +111,7 @@ class StandardGame(tk.Frame):
             self.entry_vars.append(var)
 
             # Create the Entry widget
-            entry = tk.Entry(self, textvariable=var, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Helvetica", 25))
+            entry = tk.Entry(self, textvariable=var, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
             entry.grid(row=3, column=i+1, padx=5, pady=2, sticky='ew')
             self.entries.append(entry)
 
@@ -229,18 +229,32 @@ class StandardGame(tk.Frame):
     def submit_entry(self, event, current_idx):
         # If Enter was clicked first validate the entries so far to make sure each box has a valid entry,
         #  then if it has update the grid, check if the game has finished, if it hasn't clear the entry boxes
+        #print(f"You entered: {char}") 
         print(f"You pressed Enter") 
 
         #Validate entries are all full
+        if (not self.validate_entries()):
+            print("Entries are invalid")
+            return
+        else:
+            print("Entries are valid")
 
-        #If everything is ok combine the boxes and check it against the target colours. 
-        #Calculate the error margins for each colour
+            #If everything is ok combine the boxes and check it against the target colours. 
 
-        #If all the colours aren't correct move everything in the answer grid down 1, append the latest answer to the grid
 
-        #If the player has used up their guesses then game over
+            #Calculate the error margins for each colour
 
-        #If the game is still going then clear the guess input boxes and put focus back into the first box
+            #Move everything in the answer grid down 1, append the latest answer to the grid
+
+            #If the player has used up their guesses then game over
+
+            #If the game is still going then clear the guess input boxes and put focus back into the first box
+
+            
+    def validate_entries(self):
+        return True    
+
+
 
 
 
@@ -259,7 +273,7 @@ class StandardGame(tk.Frame):
                 self.guess_vars.append(var)
 
                 # Create the Entry widget
-                guess = tk.Entry(self, textvariable=var, state="disabled", width=2, font=("Helvetica", 25))
+                guess = tk.Entry(self, textvariable=var, state="disabled", width=2, font=("Arial Rounded MT Bold", 25))
                 guess.grid(row=(2*i)+5, column=j+1, padx=5, pady=2, sticky='ew')
                 self.guesses.append(guess)     
 
@@ -287,12 +301,12 @@ class MenuScreen(tk.Frame):
 
         # title Label
         title_label = tk.Label(self, text="HEX-A-GUESS-A",
-                               font=("Comic Sans MS", 36, "bold"), fg="black", bg="white")
+                               font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
         title_label.grid(row=0, column=0, pady=(50, 20), sticky="s") # padded at top, sticks to south
 
         # new game button
         new_game_button = tk.Button(self, text="New Game",
-                                     font=("Comic Sans MS", 20), bg="light green", fg="black",
+                                     font=("Arial Rounded MT Bold", 20), bg="light green", fg="black",
                                      activebackground="dark green", activeforeground="white",
                                      width=15, height=2, relief="raised", bd=4,
                                      command=self.master.show_new_game_screen)
@@ -318,7 +332,7 @@ class NewGameScreen(tk.Frame):
 
         # standard Button
         standard_button = tk.Button(difficulty_buttons_frame, text="Standard",
-                                     font=("Comic Sans MS", 16), bg="light blue", fg="black",
+                                     font=("Arial Rounded MT Bold", 16), bg="light blue", fg="black",
                                      activebackground="dark blue", activeforeground="white",
                                      width=10, height=1, relief="raised", bd=3,
                                      command=lambda: self.master.show_standard_game())
@@ -326,7 +340,7 @@ class NewGameScreen(tk.Frame):
 
         # back button
         back_button = tk.Button(self, text="Back",
-                                 font=("Comic Sans MS", 14), bg="light blue", fg="black",
+                                 font=("Arial Rounded MT Bold", 14), bg="light blue", fg="black",
                                  activebackground="dark blue", activeforeground="white",
                                  width=15, relief="flat", bd=2,
                                  command=self.master.show_menu_screen)
