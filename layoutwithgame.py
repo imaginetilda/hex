@@ -179,6 +179,19 @@ class StandardGame(tk.Frame):
         print(f"You entered: {char}")
 
     def advance_focus(self, event, current_idx):
+        # The following is a workaround to an issue:
+        # Because this is run in a KeyRelease event it is ALSO being run when we press BackSpace or Delete
+        # This means we go back an entry, but then immediately go forward again, since BOTH events are processed
+        # To stop the entry going forward again we check "was the key press backspace or delete" 
+        # and if it was don't do anything
+        keyPressed = event.keysym # get the key that was just pressed
+
+        # Check if the key is Backspace or Delete
+        if keyPressed == "BackSpace" or keyPressed == "Delete":
+            # If it's one of these keys, do nothing and exit the function
+            return
+
+
         # Get the current text in the entry
         current_text = self.entry_vars[current_idx].get()
 
@@ -198,8 +211,8 @@ class StandardGame(tk.Frame):
         if not self.entry_vars[current_idx].get() and current_idx > 0:
             # Move focus to the previous entry
             self.entries[current_idx - 1].focus_set()
-            # Optionally move cursor to end of previous box
-            self.entries[current_idx - 1].icursor(tk.END)
+            # select the entry (so that it will be over-written)
+            self.entries[current_idx - 1].selection_range(0, tk.END)
 
     def submit_entry(self, event, current_idx):
         # If Enter was clicked first validate the entries so far to make sure each box has a valid entry,
