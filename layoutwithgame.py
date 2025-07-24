@@ -184,10 +184,13 @@ class StandardGame(tk.Frame):
         # This means we go back an entry, but then immediately go forward again, since BOTH events are processed
         # To stop the entry going forward again we check "was the key press backspace or delete" 
         # and if it was don't do anything
+        # There was also the same problem with Tab (jumping 2 places to the right, once for the Tab key pressed, and then again when KeyRelease)
+        # The same problem with Shift_L or Shift_R pressed with Tab (to move to the previous box). It would move to the left on shift-tab, but then
+        # immediately jump to the right again on KeyRelease. Also same issue with left arrow
         keyPressed = event.keysym # get the key that was just pressed
-
+        print(keyPressed)
         # Check if the key is Backspace or Delete
-        if keyPressed == "BackSpace" or keyPressed == "Delete":
+        if keyPressed == "BackSpace" or keyPressed == "Delete" or keyPressed == "Tab" or keyPressed == "Shift_L" or keyPressed == "Shift_R" or keyPressed == "Left":
             # If it's one of these keys, do nothing and exit the function
             return
 
