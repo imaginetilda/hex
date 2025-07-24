@@ -315,9 +315,13 @@ class StandardGame(tk.Frame):
         if number == 0:
             return 0
         elif number < 0:
-            return -1 * math.ceil(math.log2(abs(number))) + 1
+            print("margin")
+            print(math.log(abs(number), 3))
+            return -1 * math.ceil(math.log(abs(number), 3)) - 1
         else:
-            return math.ceil(math.log2(number)) + 1
+            print("margin")
+            print(math.log((number), 3))
+            return math.ceil(math.log(number, 3)) + 1
 
 
     def error_margin_symbols(self, number):
