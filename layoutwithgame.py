@@ -204,8 +204,6 @@ class StandardGame(tk.Frame):
     def submit_entry(self, event, current_idx):
         # If Enter was clicked first validate the entries so far to make sure each box has a valid entry,
         #  then if it has update the grid, check if the game has finished, if it hasn't clear the entry boxes
-        #print(f"You entered: {char}") 
-        print(f"You pressed Enter") 
 
         #Validate entries are all full
         if (not self.validate_entries()):
@@ -215,7 +213,6 @@ class StandardGame(tk.Frame):
             print("Entries are valid")
 
             #If everything is ok combine the boxes and check it against the target colours. 
-            print(self.entries[0].get(),self.entries[1].get(),self.entries[2].get(),self.entries[3].get(),self.entries[4].get(),self.entries[5].get())
             guessRed = int(f"{self.entries[0].get()}{self.entries[1].get()}", 16)
             guessGreen = int(f"{self.entries[2].get()}{self.entries[3].get()}", 16)
             guessBlue = int(f"{self.entries[4].get()}{self.entries[5].get()}", 16)
@@ -225,18 +222,10 @@ class StandardGame(tk.Frame):
             differenceRed = guessRed - self.targetRed
             differenceGreen = guessGreen - self.targetGreen
             differenceBlue = guessBlue - self.targetBlue
-            print("Diff:")
-            print(differenceRed)
-            print(differenceGreen)
-            print(differenceBlue)
 
             errorMarginRed = self.error_margin_indicator(differenceRed)
             errorMarginGreen = self.error_margin_indicator(differenceGreen)
             errorMarginBlue = self.error_margin_indicator(differenceBlue)
-            print("Margin:")
-            print(errorMarginRed)
-            print(errorMarginGreen)
-            print(errorMarginBlue)
 
             #Move everything in the answer grid down 1, append the latest answer to the grid
             self.update_guess_grid(self.entries, errorMarginRed, errorMarginGreen, errorMarginBlue)
@@ -315,12 +304,8 @@ class StandardGame(tk.Frame):
         if number == 0:
             return 0
         elif number < 0:
-            print("margin")
-            print(math.log(abs(number), 3))
             return -1 * math.ceil(math.log(abs(number), 3)) - 1
         else:
-            print("margin")
-            print(math.log((number), 3))
             return math.ceil(math.log(number, 3)) + 1
 
 
