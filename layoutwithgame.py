@@ -225,18 +225,29 @@ class StandardGame(tk.Frame):
             differenceRed = guessRed - self.targetRed
             differenceGreen = guessGreen - self.targetGreen
             differenceBlue = guessBlue - self.targetBlue
+            print("Diff:")
+            print(differenceRed)
+            print(differenceGreen)
+            print(differenceBlue)
 
             errorMarginRed = self.error_margin_indicator(differenceRed)
             errorMarginGreen = self.error_margin_indicator(differenceGreen)
             errorMarginBlue = self.error_margin_indicator(differenceBlue)
+            print("Margin:")
+            print(errorMarginRed)
+            print(errorMarginGreen)
+            print(errorMarginBlue)
 
             #Move everything in the answer grid down 1, append the latest answer to the grid
             self.update_guess_grid(self.entries, errorMarginRed, errorMarginGreen, errorMarginBlue)
 
+            #update their guess colour on the canvas
+            colour = "#%06x" % int(f"{self.entries[0].get()}{self.entries[1].get()}{self.entries[2].get()}{self.entries[3].get()}{self.entries[4].get()}{self.entries[5].get()}", 16)
+            self.colourCanvas.itemconfig(self.guessBox, fill=colour)
 
             #If the player has used up their guesses then game over
 
-            #If the game is still going then put focus back into the first box
+            #If the game is still going then clear the entered guesses and put the focus back into the first box
 
     def validate_entries(self):
         return True    
@@ -340,13 +351,13 @@ class MenuScreen(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
 
         # title Label
-        x=PhotoImage(file="hexaguessa.png")
+        # x=PhotoImage(file="hexaguessa.png")
         # resize to 1/4 of original image size
-        x=x.subsample(4)
-        title_label = tk.Label(self, image=x)
+        # x=x.subsample(4)
+        # title_label = tk.Label(self, image=x)
 
-        # title_label = tk.Label(self, text="HEX-A-GUESS-A",
-        #                        font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
+        title_label = tk.Label(self, text="HEX-A-GUESS-A",
+                               font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
         title_label.grid(row=0, column=0, pady=(50, 20), sticky="s") # padded at top, sticks to south
 
         # new game button
