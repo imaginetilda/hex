@@ -74,42 +74,11 @@ class StandardGame(tk.Frame):
         self.create_guess_box()
         self.create_guess_grid()
 
-        # # create a button widget
-        # button = tk.Button(self, text="Click Me!", command=self.button_click)
-        # button.grid(row=2, column=1, columnspan=6, padx=5, pady=10, sticky='w') # sticky='ew' makes it stretch horizontally
-
-        # create a StringVar to hold the entry's text
-        # self.r1Guess = tk.StringVar()
-        # self.r2Guess = tk.StringVar()
-        # self.g1Guess = tk.StringVar()
-        # self.g2Guess = tk.StringVar()
-        # self.b1Guess = tk.StringVar()
-        # self.b2Guess = tk.StringVar()
 
         # register the validation command
         # the %P is a special Tkinter placeholder that represents the value of the entry
         # if the edit is allowed.
         vcmd = self.register(self.validate_single_char)
-
-        # create the entry widget
-        # the validate='key' means validation will occur on every key press.
-        # the validatecommand is the function to call for validation.
-        """ entryR1 = tk.Entry(self, textvariable=self.r1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
-        entryR1.grid(row=3, column=1, padx=5, pady=2, sticky='ew') # sticky='ew' makes it stretch horizontally
-        entryR2 = tk.Entry(self, textvariable=self.r2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
-        entryR2.grid(row=3, column=2, padx=5, pady=2, sticky='ew')
-        entryG1 = tk.Entry(self, textvariable=self.g1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
-        entryG1.grid(row=3, column=3, padx=5, pady=2, sticky='ew')
-        entryG2 = tk.Entry(self, textvariable=self.g2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
-        entryG2.grid(row=3, column=4, padx=5, pady=2, sticky='ew')
-        entryB1 = tk.Entry(self, textvariable=self.b1Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
-        entryB1.grid(row=3, column=5, padx=5, pady=2, sticky='ew')
-        entryB2 = tk.Entry(self, textvariable=self.b2Guess, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
-        entryB2.grid(row=3, column=6, padx=5, pady=2, sticky='ew') """
-
-        # optional: set initial focus to the entry widget
-        #entryR1.focus_set()
-
 
         self.entries = [] # To store references to our Entry widgets
         self.entry_vars = [] # To store their associated StringVars
@@ -137,14 +106,7 @@ class StandardGame(tk.Frame):
 
         # Set initial focus to the first entry
         self.entries[0].focus_set()
-        
-       
-    def play_game(self):
-        pass
 
-    def button_click(self):
-        print("Button clicked!")
-        self.update_guess_box()
 
     def create_canvas(self):
         self.colourCanvas = tk.Canvas(self, width=400, height=200, bg="white", highlightbackground="black", highlightthickness=2)
