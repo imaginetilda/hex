@@ -340,8 +340,13 @@ class MenuScreen(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
 
         # title Label
-        title_label = tk.Label(self, text="HEX-A-GUESS-A",
-                               font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
+        x=PhotoImage(file="hexaguessa.png")
+        # resize to 1/4 of original image size
+        x=x.subsample(4)
+        title_label = tk.Label(self, image=x)
+
+        # title_label = tk.Label(self, text="HEX-A-GUESS-A",
+        #                        font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
         title_label.grid(row=0, column=0, pady=(50, 20), sticky="s") # padded at top, sticks to south
 
         # new game button
