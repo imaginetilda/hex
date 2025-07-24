@@ -8,8 +8,9 @@ import math
 class HexGame(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Game Menu")
+        self.title("Hex-a-Guess-a")
         self.geometry("500x900")
+        self.minsize(500,900)
        # self.resizable(False, False)
 
         # configure grid for centering content
@@ -57,6 +58,7 @@ class StandardGame(tk.Frame):
         self.focus = 0
         self.guess_count = 0
         self.max_allowed_guesses = 8
+        self.guessGridGuesses = []
 
         for i in range(0, 7):
             self.grid_columnconfigure(i, weight=0)
@@ -257,18 +259,20 @@ class StandardGame(tk.Frame):
 
             #Calculate the error margins for each colour
             differenceRed = guessRed - self.targetRed
+            differenceGreen = guessGreen - self.targetGreen
+            differenceBlue = guessBlue - self.targetBlue
 
-            print(differenceRed)
-            print(hex(differenceRed))
             errorMarginRed = self.error_margin_indicator(differenceRed)
-            print(errorMarginRed)   
+            errorMarginGreen = self.error_margin_indicator(differenceGreen)
+            errorMarginBlue = self.error_margin_indicator(differenceBlue)
 
             #Move everything in the answer grid down 1, append the latest answer to the grid
+            self.update_guess_grid(self.entries, errorMarginRed, errorMarginGreen, errorMarginBlue)
 
 
             #If the player has used up their guesses then game over
 
-            #If the game is still going then clear the guess input boxes and put focus back into the first box
+            #If the game is still going then put focus back into the first box
 
     def validate_entries(self):
         return True    
@@ -278,23 +282,52 @@ class StandardGame(tk.Frame):
         
 
     def create_guess_grid(self):
+        #initialize the grid array
+        self.guessGridStructure = []
+        guessLineStructure = []
         #For each guess line there's an indicator row (up or down), and a row below that contains the guess
         self.guesses = [] # To store references to our Entry widgets
         self.guess_vars = [] # To store their associated StringVars
-        for i in range(8):
+
+        # We store 3 tuplets for each guess - The first is the errorMargin for the guess, then the 2 associated digits for each colour. 
+        for i in range(self.max_allowed_guesses):
             #up/down indicators
             for j in range(3):
-                label = tk.Label(self, text="<<<<>>>>")
-                label.grid(row=(2*i)+4, column=(2*j)+1,  columnspan=2, padx=5, pady=2, sticky='ew')
+                labelElement = tk.Label(self, text="<<<<>>>>")
+                labelElement.grid(row=(2*i)+4, column=(2*j)+1,  columnspan=2, padx=5, pady=2, sticky='ew')
+                guessLineStructure.append(labelElement)
             for j in range(6):
                 # Create a StringVar for each entry
-                var = tk.StringVar()
-                self.guess_vars.append(var)
+                entryText = tk.StringVar()
+                entryText.set("")
+                #self.guess_vars.append(var)
 
                 # Create the Entry widget
-                guess = tk.Entry(self, textvariable=var, state="disabled", width=2, font=("Arial Rounded MT Bold", 25))
-                guess.grid(row=(2*i)+5, column=j+1, padx=5, pady=2, sticky='ew')
-                self.guesses.append(guess)   
+                guessElement = tk.Entry(self, textvariable=entryText, state="disabled", width=2, font=("Helvetica", 25))
+                guessElement.grid(row=(2*i)+5, column=j+1, padx=5, pady=2, sticky='ew')
+
+                #We don't need to save the reference to the actual Entry, only to the reference of the entryText
+                guessLineStructure.append(entryText) 
+            self.guessGridStructure.append(guessLineStructure)      
+
+    def update_guess_grid(self, entries, errorMarginRed, errorMarginGreen, errorMarginBlue ):
+
+        newGuessLine = [errorMarginRed, errorMarginGreen, errorMarginBlue,entries[0].get(),entries[1].get(),entries[2].get(),entries[3].get(),entries[4].get(),entries[5].get()]
+        print(newGuessLine)
+        self.guessGridGuesses.insert(0, newGuessLine)
+        #For each guess line there's an indicator row (up or down), and a row below that contains the guess
+        self.guesses = [] # To store references to our Entry widgets
+        self.guess_vars = [] # To store their associated StringVars
+
+        for i in range(len(self.guessGridGuesses)):
+            guessLineStructure = self.guessGridStructure[i]
+            #up/down indicators
+            for j in range(3):
+                guessLineStructure[j]['text'] = "00000"
+            for j in range(6):
+                guessLineStructure[j+3].set(self.entries[j].get())   
+        
+
 
                   
     def error_margin_indicator(self, number):
