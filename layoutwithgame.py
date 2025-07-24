@@ -88,6 +88,8 @@ class StandardGame(tk.Frame):
             self.entry_vars.append(var)
 
             # Create the Entry widget
+            # the validate='key' means validation will occur on every key press.
+            # the validatecommand is the function to call for validation.
             entry = tk.Entry(self, textvariable=var, validate='key', validatecommand=(vcmd, '%P'), width=2, font=("Arial Rounded MT Bold", 25))
             entry.grid(row=3, column=i+1, padx=5, pady=2, sticky='ew')
             self.entries.append(entry)
@@ -253,6 +255,7 @@ class StandardGame(tk.Frame):
 
         # We store 3 tuplets for each guess - The first is the errorMargin for the guess, then the 2 associated digits for each colour. 
         for i in range(self.max_allowed_guesses):
+            guessLineStructure = []
             #up/down indicators
             for j in range(3):
                 labelElement = tk.Label(self, text="<<<<>>>>")
@@ -270,12 +273,14 @@ class StandardGame(tk.Frame):
 
                 #We don't need to save the reference to the actual Entry, only to the reference of the entryText
                 guessLineStructure.append(entryText) 
+
             self.guessGridStructure.append(guessLineStructure)      
+
+
 
     def update_guess_grid(self, entries, errorMarginRed, errorMarginGreen, errorMarginBlue ):
 
         newGuessLine = [errorMarginRed, errorMarginGreen, errorMarginBlue,entries[0].get(),entries[1].get(),entries[2].get(),entries[3].get(),entries[4].get(),entries[5].get()]
-        print(newGuessLine)
         self.guessGridGuesses.insert(0, newGuessLine)
         #For each guess line there's an indicator row (up or down), and a row below that contains the guess
         self.guesses = [] # To store references to our Entry widgets
@@ -285,9 +290,9 @@ class StandardGame(tk.Frame):
             guessLineStructure = self.guessGridStructure[i]
             #up/down indicators
             for j in range(3):
-                guessLineStructure[j]['text'] = "00000"
+                guessLineStructure[j]['text'] = self.error_margin_symbols(self.guessGridGuesses[i][j])
             for j in range(6):
-                guessLineStructure[j+3].set(self.entries[j].get())   
+                guessLineStructure[j+3].set(self.guessGridGuesses[i][j+3])   
         
 
 
@@ -296,16 +301,25 @@ class StandardGame(tk.Frame):
         # Calculates the base-3 logarithm of the absolute of a number and rounds it up to the next integer.
         # If the original number is negative it then returns this value as a negative. 
         # Need to add 1, since if you are out by 1 then log3 will be zero, and the guess is still not quite correct
-
         if number == 0:
             return 0
         elif number < 0:
             return -1 * math.ceil(math.log2(abs(number))) + 1
         else:
-            return math.ceil(math.log(number, 3)) + 1
-                
+            return math.ceil(math.log2(number)) + 1
 
-    
+
+    def error_margin_symbols(self, number):
+        symbol = ""    
+        if number == 0:
+            return "O"
+        elif number < 0:
+            for i in range(abs(number)):
+                symbol = symbol + ">"
+        else:
+            for i in range(number):
+                symbol = symbol + "<"
+        return symbol
 
 
 
