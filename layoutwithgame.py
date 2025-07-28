@@ -168,7 +168,7 @@ class StandardGame(tk.Frame):
 
     def validate_single_char(self, input_text):
         '''validation function to ensure only one character is entered'''
-        if (len(input_text) <= 1) and (re.fullmatch(r"^[a-fA-F0-9-]*$", input_text)):
+        if (len(input_text) <= 1) and (re.fullmatch(r"^[a-fA-F0-9]*$", input_text)):
             return True
         else:
             return False
@@ -204,7 +204,7 @@ class StandardGame(tk.Frame):
         if current_text and len(current_text) == 1 and current_idx < len(self.entries) - 1:
             # Move focus to the next entry
             self.entries[current_idx + 1].focus_set()
-            # Optionally select the text in the next box for easy overwriting
+            # Select the text in the next box for easy overwriting
             self.entries[current_idx + 1].selection_range(0, tk.END)
 
 
@@ -250,11 +250,16 @@ class StandardGame(tk.Frame):
             colour = "#%06x" % int(f"{self.entries[0].get()}{self.entries[1].get()}{self.entries[2].get()}{self.entries[3].get()}{self.entries[4].get()}{self.entries[5].get()}", 16)
             self.colourCanvas.itemconfig(self.guessBox, fill=colour)
 
+            # Are all the entries correct? If so, game over. Put up a congratulations message, does it qualify as a high score, if so, 
+            # in the congrats message have an entry box to enter your name, then save the high scores back
+
             #If the player has used up their guesses then game over
 
             #If the game is still going then clear the entered guesses and put the focus back into the first box
 
+
     def validate_entries(self):
+    # Check to see that all entries have been added    
         return True    
 
 
@@ -274,7 +279,7 @@ class StandardGame(tk.Frame):
             guessLineStructure = []
             #up/down indicators
             for j in range(3):
-                labelElement = tk.Label(self, text="<<<<>>>>")
+                labelElement = tk.Label(self, text="")
                 labelElement.grid(row=(2*i)+4, column=(2*j)+1,  columnspan=2, padx=5, pady=2, sticky='ew')
                 guessLineStructure.append(labelElement)
             for j in range(6):
