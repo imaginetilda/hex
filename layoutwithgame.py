@@ -129,18 +129,26 @@ class StandardGame(tk.Frame):
         # and (x2, y2) is the bottom-right corner
         # The 'fill' option sets the solid color
         # The 'outline' option sets the border color
-        box_width = 200
+        box_width = 150
         box_height = 150
         
-        # Calculate coordinates to center the box on the canvas
-        canvas_width = 400
-        canvas_height = 200
-        x1 = 0
-        y1 = 0
-        x2 = 190
+        # Calculate coordinates to center the target box on the LEFT HALF of the canvas
+        x1 = (self.canvasWidth / 2 - box_width) / 2
+        y1 = ((self.canvasHeight - box_height) / 2)+10
+        x2 = x1 + box_width
         y2 = y1 + box_height
 
-        self.targetBox = self.colourCanvas.create_rectangle(0, 0, 190,190, fill=self.targetColour, outline="", width=0)
+        self.targetBox = self.colourCanvas.create_rectangle(x1, y1, x2, y2, fill=self.targetColour, outline="", width=0)
+
+        # Add centered text above the target box
+        text_x = x1 + box_width / 2
+        text_y = y1 - 15 # Place text slightly above the box's top edge
+        if text_y < 0: # Ensure text is not drawn off-canvas top edge
+            text_y = 15 # Default to 15 pixels from canvas top if it would go off
+
+        self.colourCanvas.create_text(text_x, text_y, text="Target Colour",
+                                      font=("Arial Rounded MT Bold", 14), fill="black")
+
 
 
     def create_guess_box(self):
@@ -153,12 +161,24 @@ class StandardGame(tk.Frame):
         # and (x2, y2) is the bottom-right corner.
         # the 'fill' option sets the solid color.
         # the 'outline' option sets the border color.
-        box_width = 200
+        box_width = 150
         box_height = 150
         
-        # calculate coordinates to center the box on the canvas
+        # Calculate coordinates to center the guess box on the RIGHT HALF of the canvas
+        x1 = self.canvasWidth / 2 + (self.canvasWidth / 2 - box_width) / 2
+        y1 = ((self.canvasHeight - box_height) / 2)+10
+        x2 = x1 + box_width
+        y2 = y1 + box_height
         
-        self.guessBox = self.colourCanvas.create_rectangle(200, 0, 390,190, fill=box_color, outline="", width=0)     
+        self.guessBox = self.colourCanvas.create_rectangle(x1, y1, x2, y2, fill=box_color, outline="", width=0)     
+
+        # Add centered text above the guess box
+        text_x = x1 + box_width / 2
+        text_y = y1 - 15 # Place text slightly above the box's top edge
+        if text_y < 0: # Ensure text is not drawn off-canvas top edge
+            text_y = 15 # Default to 15 pixels from canvas top if it would go off
+        self.colourCanvas.create_text(text_x, text_y, text="Your Guess",
+                                      font=("Arial Rounded MT Bold", 14), fill="black")
 
     def update_guess_box(self):
         # generate a random hex color code
@@ -168,7 +188,7 @@ class StandardGame(tk.Frame):
 
     def validate_single_char(self, input_text):
         '''validation function to ensure only one character is entered'''
-        if (len(input_text) <= 1) and (re.fullmatch(r"^[a-fA-F0-9]*$", input_text)):
+        if (len(input_text) <= 1) and (re.fullmatch(r"^[a-fA-F0-9-]*$", input_text)):
             return True
         else:
             return False
@@ -251,15 +271,20 @@ class StandardGame(tk.Frame):
             self.colourCanvas.itemconfig(self.guessBox, fill=colour)
 
             # Are all the entries correct? If so, game over. Put up a congratulations message, does it qualify as a high score, if so, 
-            # in the congrats message have an entry box to enter your name, then save the high scores back
+            # in the congrats message have an entry b       ox to enter your name, then save the high scores back
 
             #If the player has used up their guesses then game over
 
             #If the game is still going then clear the entered guesses and put the focus back into the first box
-
+                # clear input fields for the next guess
+            for var in self.entry_vars:
+                var.set("")
+            #Set focus back to the first entry box
+            self.entries[0].focus_set()
+            #Select all for easy overwriting
+            self.entries[0].selection_range(0, tk.END)
 
     def validate_entries(self):
-    # Check to see that all entries have been added    
         return True    
 
 
@@ -362,12 +387,17 @@ class MenuScreen(tk.Frame):
 
         # title Label
         # x=PhotoImage(file="hexaguessa.png")
-        # resize to 1/4 of original image size
+        # # resize to 1/4 of original image size
         # x=x.subsample(4)
         # title_label = tk.Label(self, image=x)
 
-        title_label = tk.Label(self, text="HEX-A-GUESS-A",
-                               font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
+        self.photo = PhotoImage(file="hexaguessa.png")
+        # resize to 1/4 of original image size
+        self.photo = self.photo.subsample(4)
+        title_label = tk.Label(self, image=self.photo, bg="white")
+
+        # title_label = tk.Label(self, text="HEX-A-GUESS-A",        
+        #                        font=("Arial Rounded MT Bold", 36, "bold"), fg="black", bg="white")
         title_label.grid(row=0, column=0, pady=(50, 20), sticky="s") # padded at top, sticks to south
 
         # new game button
