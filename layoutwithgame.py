@@ -100,6 +100,9 @@ class MainGameGUI(tk.Frame):
         self.focus = 0 # We focus on the first entry when starting the game
         self.guess_count = 0 # At the beginning of the game we have had zero guesses
 
+        self.game_ended = False # At the beginning of the game the game is not ended
+        self.end_game_choice = 0 # holds the player's choice at the end of the game. At the beginning of the game the player has not made a choice, so set to zero
+
         self.list_of_guess_line_values = [] # This is a list of each submitted guess so far. It contains the previous guess_line_values. 
                                             # guess_line_values contains the error margin for each hex colour pair, then each hex digit the player submitted as a guess
 
@@ -326,27 +329,25 @@ class MainGameGUI(tk.Frame):
 
             # Are all the entries correct? If so, game over. Put up a congratulations message, does it qualify as a high score, if so, 
             # in the congrats message have an entry box to enter your name, then save the high scores back
+            game_over = FALSE
             if differenceRed == 0 and differenceGreen == 0 and differenceBlue == 0:
-                print("Player won the game")
-                messagebox.showinfo("WOOHOO", "You won!")
-                for entry in self.entry_boxes:
-                    entry.config(state="disabled")
-                game_ended = True
+                #Player won the game
+                messagebox_reply = messagebox.askretrycancel("Play Again?", "You won! Do you want to play again?")
+                game_over = TRUE
+            elif self.guess_count >=  MAX_ALLOWED_GUESSES:
+                #Player lost the game
+                messagebox_reply = messagebox.askretrycancel("Play Again?", "You lost! Do you want to play again?")
+                game_over = TRUE
+            if game_over:
+                if messagebox_reply: # result is True if Retry, False if Cancel
+                    self.master.show_standard_game()
+                else:
+                    self.master.show_menu_screen()
                 return
-
-            #If the player has used up their guesses then game over
-            if self.guess_count >=  MAX_ALLOWED_GUESSES:
-                print("Max guesses reached")
-                messagebox.showinfo("Max guesses reached", f"You lost :(")
-                for entry in self.entry_boxes:
-                    entry.config(state="disabled")
-                game_ended = True
-                return
-            # else:
-            if not game_ended:
-                #If the game is still going then clear the entered guesses and put the focus back into the first box
-                # clear input fields for the next guess
-                for var in self.entry_input_values:
+            
+            #If you get here then the game is still going - clear the entered guesses and put the focus back into the first box
+            # clear input fields for the next guess
+            for var in self.entry_input_values:
                     var.set("")
             #Set focus back to the first entry box
             self.entry_boxes[0].focus_set()
