@@ -76,6 +76,9 @@ class HexGame(tk.Tk):
         """new game options screen"""
         self.switch_frame(NewGameScreen)
 
+    def exit_game(self):
+        self.destroy()
+
 
     def show_standard_game(self):
         """standard game screen"""
@@ -486,11 +489,20 @@ class MenuScreen(tk.Frame):
 
         # new game button
         new_game_button = tk.Button(self, text="New Game",
-                                     font=("Arial Rounded MT Bold", 20), bg="light green", fg="black",
-                                     activebackground="dark green", activeforeground="white",
+                                     font=("Arial Rounded MT Bold", 20), bg="darkolivegreen3", fg="black",
+                                     activebackground="darkolivegreen4", activeforeground="white",
                                      width=15, height=2, relief="raised", bd=4,
                                      command=self.master.show_new_game_screen)
         new_game_button.grid(row=1, column=0, pady=10)
+
+
+    #exit game button
+        exit_game_button = tk.Button(self, text="Exit",
+                                     font=("Arial Rounded MT Bold", 20), bg="coral1", fg="black",
+                                     activebackground="coral3", activeforeground="white",
+                                     width=8, height=1, relief="raised", bd=4,
+                                     command=self.master.exit_game)
+        exit_game_button.grid(row=2, column=0, pady=10)
 
 
 
