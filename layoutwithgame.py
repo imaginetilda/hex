@@ -443,6 +443,16 @@ class MainGameGUI(tk.Frame):
         return symbol    
 
 
+    def update_score(self, error_margin_red, error_margin_green, error_margin_blue):
+        print(f"R: {error_margin_red} G: {error_margin_green}   B: {error_margin_blue}")
+
+        average_error = (abs(error_margin_red) + abs(error_margin_green) + abs(error_margin_blue)) / 3
+        print(f"err: {average_error}")
+        self.score = ((255 - average_error)/255) * self.score 
+        print(f"Score: {self.score}")
+        self.accuracy = (int(self.score)/255)*100
+        print(f"Accuracy: {round(self.accuracy,2)}%")
+
 
 
 class MenuScreen(tk.Frame):
