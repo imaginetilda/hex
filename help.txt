@@ -1,0 +1,10 @@
+Some notes on common color combinations are provided below:
+> Pure Red, Green, or Blue → turn up that color, leaving the other two at 0.
+> All at 255 (full saturation of all colors) → White
+> All at 0 (no color) → Black
+> Equal saturations of each → Gray
+> Red + Blue → Purple
+> Red + Green → Yellow
+> Green + Blue → Turquoise
+> Dark yellow → make yellow, then reduce both red and green
+> Orange → make yellow, but more red, less green
