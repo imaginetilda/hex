@@ -1,3 +1,4 @@
+#This is a heading#
 Some notes on common color combinations are provided below:
 > Pure Red, Green, or Blue → turn up that color, leaving the other two at 0.
 > All at 255 (full saturation of all colors) → White
