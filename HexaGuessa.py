@@ -55,6 +55,10 @@ TAG_HEADING = "heading"
 HIGH_SCORE_FILE = "highscores.json"
 HTML_FILE_TO_OPEN = "help.html"
 
+#Difficulty levels for the game
+DIFFICULTY_STANDARD = 1
+DIFFICULTY_HARD = 2
+
 
 
 
@@ -67,8 +71,10 @@ class HexGame(tk.Tk):
         """ Initalise """    
         super().__init__()
         self.title("Hex-a-Guess-a")
-        self.geometry("500x900")
-        self.minsize(500,900)
+        self.geometry("500x950")
+        self.minsize(500,950)
+
+        self.difficulty = DIFFICULTY_STANDARD # Default difficulty level
 
         # configure grid for centering content
         self.grid_rowconfigure(0, weight=1)
@@ -101,8 +107,9 @@ class HexGame(tk.Tk):
         self.destroy()
 
 
-    def show_standard_game(self):
+    def show_game(self, difficulty):
         """standard game screen"""
+        self.difficulty = difficulty
         self.switch_frame(MainGameGUI)
 
     def show_help_screen(self):
@@ -127,6 +134,7 @@ class MainGameGUI(tk.Frame):
         """ When MainGameGUI is started this will set everything up, and start monitoring for key presses """
         super().__init__(master, bg="white")
         self.master = master
+        self.difficulty = master.difficulty # Set the difficulty level for the game
 
         self.score = 255
         self.focus = 0 # We focus on the first entry when starting the game
@@ -186,6 +194,15 @@ class MainGameGUI(tk.Frame):
             entry.bind("<Delete>", lambda event, idx=i: self.regress_focus(event, idx))
             # Bind <Return> (Enter button) to submit the entry
             entry.bind("<Return>", lambda event, idx=i: self.submit_entry(event, idx))
+
+        # main manu button
+        main_menu_button = tk.Button(self, text="Main Menu",
+                                 font=("Arial Rounded MT Bold", 14), bg="light blue", fg="black",
+                                 activebackground="dark blue", activeforeground="white",
+                                 width=15, relief="flat", bd=2,
+                                 command=self.master.show_menu_screen)
+        main_menu_button.grid(row=(MAX_ALLOWED_GUESSES * 2) + 5, column=0, columnspan=HEX_LENGTH+1, pady=(10, 20), sticky="n")
+
 
         # Set initial focus to the first entry
         self.entry_boxes[0].focus_set()
@@ -343,9 +360,14 @@ class MainGameGUI(tk.Frame):
             differenceGreen = guessGreen - self.targetGreen
             differenceBlue = guessBlue - self.targetBlue
 
-            errorMarginRed = self.error_margin_indicator(differenceRed)
-            errorMarginGreen = self.error_margin_indicator(differenceGreen)
-            errorMarginBlue = self.error_margin_indicator(differenceBlue)
+            if (self.difficulty == DIFFICULTY_STANDARD):
+                errorMarginRed = self.error_margin_indicator(differenceRed)
+                errorMarginGreen = self.error_margin_indicator(differenceGreen)
+                errorMarginBlue = self.error_margin_indicator(differenceBlue)
+            else: # DIFFICULTY_HARD
+                errorMarginRed = self.get_sign(differenceRed)
+                errorMarginGreen = self.get_sign(differenceGreen)
+                errorMarginBlue = self.get_sign(differenceBlue)
 
             self.update_score(differenceRed,differenceGreen,differenceBlue)
 
@@ -487,6 +509,16 @@ class MainGameGUI(tk.Frame):
 
 
 
+    def get_sign(self, value):
+            if value > 0:
+                return 1
+            elif value < 0:
+                return -1
+            else:
+                return 0    
+
+
+
 class HelpScreen(tk.Frame):
     '''Display text file containing the help'''
     def __init__(self, master):
@@ -526,7 +558,7 @@ class HelpScreen(tk.Frame):
         # Configure tags for various styles
         self.configure_tags()               
         # Load and parse the file
-        self.load_and_display_text("Help Component\help.txt")
+        self.load_and_display_text("help.txt")
 
         # Make the text area read-only after loading
         self.text_area.config(state=tk.DISABLED)
@@ -710,36 +742,36 @@ class MenuScreen(tk.Frame):
         new_game_button = tk.Button(self, text="New Game",
                                      font=("Arial Rounded MT Bold", 20), bg="darkolivegreen3", fg="black",
                                      activebackground="darkolivegreen4", activeforeground="white",
-                                     width=15, height=2, relief="raised", bd=4,
+                                     width=12, height=2, relief="raised", bd=4,
                                      command=self.master.show_new_game_screen)
         new_game_button.grid(row=1, column=0, pady=10)
 
 
         # highscores button
         highscores_button = tk.Button(self, text="Leaderboard",
-                                     font=("Arial Rounded MT Bold", 20), bg="darkolivegreen3", fg="black",
-                                     activebackground="darkolivegreen4", activeforeground="white",
-                                     width=15, height=2, relief="raised", bd=4,
+                                     font=("Arial Rounded MT Bold", 20), bg="goldenrod3", fg="black",
+                                     activebackground="goldenrod4", activeforeground="white",
+                                     width=12, height=1, relief="raised", bd=4,
                                      command=self.master.show_high_score_screen)
-        highscores_button.grid(row=2, column=0, pady=10)
+        highscores_button.grid(row=2, column=0, pady=10, sticky="s")
 
 
         # help button
         help_button = tk.Button(self, text="Help",
-                                     font=("Arial Rounded MT Bold", 20), bg="darkolivegreen3", fg="black",
-                                     activebackground="darkolivegreen4", activeforeground="white",
-                                     width=15, height=2, relief="raised", bd=4,
+                                     font=("Arial Rounded MT Bold", 20), bg="steelblue3", fg="black",
+                                     activebackground="steelblue4", activeforeground="white",
+                                     width=12, height=1, relief="raised", bd=4,
                                      command=self.master.show_help_screen)
-        help_button.grid(row=3, column=0, pady=10)
+        help_button.grid(row=3, column=0, pady=10, sticky="n")
 
 
     #exit game button
         exit_game_button = tk.Button(self, text="Exit",
                                      font=("Arial Rounded MT Bold", 20), bg="coral1", fg="black",
                                      activebackground="coral3", activeforeground="white",
-                                     width=8, height=1, relief="raised", bd=4,
+                                     width=12, height=1, relief="raised", bd=4,
                                      command=self.master.exit_game)
-        exit_game_button.grid(row=4, column=0, pady=10)
+        exit_game_button.grid(row=4, column=0, pady=10, sticky="n")
 
 
 
@@ -760,12 +792,20 @@ class NewGameScreen(tk.Frame):
         difficulty_buttons_frame = tk.Frame(self, bg="white")
         difficulty_buttons_frame.grid(row=3, column=0, pady=20)
 
-        # standard Button
+        # Easy Game Button
         standard_button = tk.Button(difficulty_buttons_frame, text="Standard",
                                      font=("Arial Rounded MT Bold", 16), bg="light blue", fg="black",
                                      activebackground="dark blue", activeforeground="white",
                                      width=10, height=1, relief="raised", bd=3,
-                                     command=lambda: self.master.show_standard_game())
+                                     command=lambda: self.master.show_game(DIFFICULTY_STANDARD))
+        standard_button.pack(side=tk.LEFT, padx=10)
+
+        # Hard Game Button
+        standard_button = tk.Button(difficulty_buttons_frame, text="Hard",
+                                     font=("Arial Rounded MT Bold", 16), bg="light blue", fg="black",
+                                     activebackground="dark blue", activeforeground="white",
+                                     width=10, height=1, relief="raised", bd=3,
+                                     command=lambda: self.master.show_game(DIFFICULTY_HARD))
         standard_button.pack(side=tk.LEFT, padx=10)
 
         # back button
