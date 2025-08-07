@@ -1,0 +1,18 @@
+{
+    "mode_one": [
+        {
+            "player_name": "Player 1",
+            "score": 94.3
+        },
+        {
+            "player_name": "Player 3",
+            "score": 90.5
+        }
+    ],
+    "mode_two": [
+        {
+            "player_name": "Player 2",
+            "score": 87.5
+        }
+    ]
+}
