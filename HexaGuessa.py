@@ -80,17 +80,12 @@ class HexGame(tk.Tk):
         self.title("Hex-a-Guess-a")
         self.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
         self.minsize(WINDOW_WIDTH,WINDOW_HEIGHT)
-
         self.difficulty = DIFFICULTY_STANDARD # Default difficulty level
-
         # configure grid for centering content
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
-
         self.current_frame = None # to keep track of the currently displayed frame
-
         self.show_menu_screen() # show main menu
-
 
     def switch_frame(self, frame_class):
         """removes current frame and switches to new, ie moving from screen to screen
@@ -102,21 +97,17 @@ class HexGame(tk.Tk):
         self.current_frame = new_frame
         self.current_frame.grid(row=0, column=0, sticky="nsew") # make new frame
 
-
     def show_menu_screen(self):
         """main menu"""
         self.switch_frame(MenuScreen)
-
 
     def show_new_game_screen(self):
         """new game options screen"""
         self.switch_frame(NewGameScreen)
 
-
     def exit_game(self):
         """end everything and close the game"""
         self.destroy()
-
 
     def show_game(self, difficulty):
         """play the game with the difficulty selected
@@ -151,23 +142,19 @@ class MainGameLayout(tk.Frame):
     def __init__(self, master):
         super().__init__(master, bg="white")
         self.master = master
-
         # Define the layout for each column in the grid
         for i in range(MAX_ALLOWED_GUESSES - 1):
             self.grid_columnconfigure(i, weight=0) # for padding at bottom
-
         # The first and last column is space from left of the grid to the left of the window,
         # and from the right of the grid to the right edge of the window, hence weight=1
         self.grid_columnconfigure(0, weight=1) #for padding at left
         for i in range(1, HEX_LENGTH + 1):
             self.grid_columnconfigure(i, weight=0) #we don't "stretch" the entries in the main part of the grid
         self.grid_columnconfigure(8, weight=1) #for padding at right
-
         self.colour_canvas = self.create_canvas() # The area at the top containing the coloured boxes
         self.target_box = self.create_target_box() 
         self.guess_box = self.create_guess_box()
         self.guess_grid = self.create_guess_grid()
-
         self.entry_boxes = [] # To store references to our Entry widgets
         self.entry_input_values = [] # To store their associated StringVars, ie their values
         # Create the boxes where we enter our guesses when playing the game
@@ -175,12 +162,10 @@ class MainGameLayout(tk.Frame):
             # Create a StringVar for each entry
             var = tk.StringVar()
             self.entry_input_values.append(var)
-
             # Create the Entry widget, ie the each box where you enter your guess
             entry = tk.Entry(self, textvariable=var, width=2, font=(FONT, 25))
             entry.grid(row=3, column=i+1, padx=5, pady=2, sticky='ew')
             self.entry_boxes.append(entry)
-
         # main manu button, so we can quit the game at any point
         self.main_menu_button = tk.Button(self, text="Main Menu",
                                  font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
@@ -189,15 +174,12 @@ class MainGameLayout(tk.Frame):
                                  command=self.master.master.show_menu_screen)
         self.main_menu_button.grid(row=(MAX_ALLOWED_GUESSES * 2) + 5, column=2, columnspan=HEX_LENGTH-2, pady=(10, 20), sticky="n")
 
-
     def create_canvas(self):
         """ Creates the area that contains squares containing the squares of the target colour and the previous guess's colour """
         colour_canvas = tk.Canvas(self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, bg="white", highlightbackground="black", highlightthickness=2)
-
         # Position the canvas with a blank column to the left in order to centre correctly with the guessed grid
         colour_canvas.grid(row=0, column=1, columnspan=HEX_LENGTH  +0, padx=5, pady=10, sticky='w') 
         return colour_canvas
-    
 
     def create_target_box(self):
         """ Create a square area containing the actual target colour """
@@ -212,22 +194,17 @@ class MainGameLayout(tk.Frame):
         y1 = ((CANVAS_HEIGHT - COLOUR_BOX_HEIGHT) / 2)+10
         x2 = x1 + COLOUR_BOX_WIDTH
         y2 = y1 + COLOUR_BOX_HEIGHT
-
         self.targetBox = self.colour_canvas.create_rectangle(x1, y1, x2, y2, fill=DEFAULT_GUESS_COLOUR, outline="", width=0)
-
         # Add centered text above the target box
         text_x = x1 + COLOUR_BOX_WIDTH / 2
         text_y = y1 - 15 # Place text slightly above the box's top edge
         if text_y < 0: # Ensure text is not drawn off-canvas top edge
             text_y = 15 # Default to 15 pixels from canvas top if it would go off
-
         self.colour_canvas.create_text(text_x, text_y, text="Target Colour",
                                       font=(FONT, 14), fill="black")
 
-
     def create_guess_box(self):
         """ Create a square area containing the previous guess's colour. Set to default on creation. """
-
         # draw a rectangle (the "box") on the canvas.
         # the coordinates are (x1, y1, x2, y2) where (x1, y1) is the top-left corner
         # and (x2, y2) is the bottom-right corner.
@@ -239,9 +216,7 @@ class MainGameLayout(tk.Frame):
         y1 = ((CANVAS_HEIGHT - COLOUR_BOX_HEIGHT) / 2) + 10 # 10 pixels for padding from the text
         x2 = x1 + COLOUR_BOX_WIDTH
         y2 = y1 + COLOUR_BOX_HEIGHT
-        
         self.guessBox = self.colour_canvas.create_rectangle(x1, y1, x2, y2, fill=DEFAULT_GUESS_COLOUR, outline="", width=0)     
-
         # Add centered text above the guess box
         text_x = x1 + COLOUR_BOX_WIDTH / 2
         text_y = y1 - 15 # Place text slightly above the box's top edge
@@ -249,7 +224,6 @@ class MainGameLayout(tk.Frame):
             text_y = 15 # Default to 15 pixels from canvas top if it would go off
         self.colour_canvas.create_text(text_x, text_y, text="Your Guess",
                                       font=(FONT, 14), fill="black")
-
 
     def create_guess_grid(self):
         """This is where we display the previous guesses and the hints if it's too high or too low"""
@@ -259,7 +233,6 @@ class MainGameLayout(tk.Frame):
         #For each guess line there's an indicator row (up or down), and a row below that contains the guess
         self.guesses = [] # To store references to our Entry widgets
         self.guess_vars = [] # To store their associated StringVars
-
         # We store 2 parts for each guess - The first is the errorMargin for each colour pair (3 values), then the 2 associated digits for each colour (ie 6 values). 
         for i in range(MAX_ALLOWED_GUESSES):
             guessLineStructure = []
@@ -273,14 +246,11 @@ class MainGameLayout(tk.Frame):
                 # Create a StringVar for each entry
                 entryText = tk.StringVar()
                 entryText.set("")
-
                 # Create the Entry widget
                 guessElement = tk.Entry(self, textvariable=entryText, state="disabled", width=2, font=(FONT, 25))
                 guessElement.grid(row=(2*i)+5, column=j+1, padx=5, pady=2, sticky='ew')
-
                 #We don't need to save the reference to the actual Entry, only to the reference of the entryText
                 guessLineStructure.append(entryText) 
-
             self.guessGridStructure.append(guessLineStructure)      
 
 
@@ -295,51 +265,40 @@ class MainGameLogic(tk.Frame):
         self.master = master
         self.layout = layout
         self.difficulty = master.difficulty # Set the difficulty level for the game
-
         #Get the lowest score in the High Score json for this difficulty,
         # so we know if, when they have finished, they got a high score or not. 
         # If they did get a high score they will be directed to enter their name 
         # so it will be added to the high score json
         self.lowest_score_for_difficulty = self.get_lowest_score_for_difficulty()
-
-        self.score = 255
+        self.score = 255 # maximum decimal value of 0xFF
         self.focus = 0 # We focus on the first entry when starting the game
         self.guess_count = 0 # At the beginning of the game we have had zero guesses
-
         self.game_ended = False # At the beginning of the game the game is not ended
         self.end_game_choice = 0 # holds the player's choice at the end of the game. At the beginning of the game the player has not made a choice, so set to zero
-
         self.list_of_guess_line_values = [] # This is a list of each submitted guess so far. It contains the previous guess_line_values. 
                                             # guess_line_values contains the error margin for each hex colour pair, then each hex digit the player submitted as a guess
-
         # register the validation command, ie make sure only one character is entered per box
         validate_is_single_character  = self.register(self.validate_single_char)
-
         #We created the entry boxes in the layout, but now we are going to add validation to them, 
         #and add bindings to add fine control over what happens when a key is pressed, and to make sure
         #the entry is valid ie because of th fine control we can make sure only valid input is entered
         for i in range(len(self.layout.entry_boxes)): #We have to use i as an index later
             entry_box = self.layout.entry_boxes[i]
-
             # Create the Entry widget
             # the validate='key' means validation will occur on every key press.
             # the validatecommand is the function to call for validation.
             entry_box.config(validate='key', validatecommand=(validate_is_single_character, '%P'))
-
             # Bind the <KeyRelease> event to our advance_focus function
             # We use <KeyRelease> instead of <KeyPress> because
             # the textvariable will have been updated by the time KeyRelease fires.
             entry_box.bind("<KeyRelease>", lambda event, idx=i: self.advance_focus(event, idx))
-
             # Bind <BackSpace> or <Delete> to move backward
             entry_box.bind("<BackSpace>", lambda event, idx=i: self.regress_focus(event, idx))
             entry_box.bind("<Delete>", lambda event, idx=i: self.regress_focus(event, idx))
             # Bind <Return> (Enter button) to submit the entry
             entry_box.bind("<Return>", lambda event, idx=i: self.submit_entry(event, idx))
-
         # Set initial focus to the first entry
         self.layout.entry_boxes[0].focus_set()
-
         # define the colour for the target box
         self.target_colour = "#%06x" % random.randint(0, 0xFFFFFF) #Makes a random colour hex, eg #26e16b
         print(self.target_colour) # Helps with cheating ;)
@@ -349,7 +308,6 @@ class MainGameLogic(tk.Frame):
         self.target_blue = int(self.target_colour[5:7], 16)
         self.update_target_box(self.target_colour)
 
-
     def update_guess_box(self,colour):
         """Updates the box with the actual colour of the player's latest guess
             colour is a 6 digit hex value 
@@ -357,14 +315,12 @@ class MainGameLogic(tk.Frame):
         self.colour = colour
         self.layout.colour_canvas.itemconfig(self.layout.guessBox, fill=self.colour)
 
-
     def update_target_box(self,colour):
         """Updates the box with the target colour that the player is trying to guess
             colour is a 6 digit hex value 
         """
         self.colour = colour
         self.layout.colour_canvas.itemconfig(self.layout.targetBox, fill=self.colour)
-    
 
     def validate_single_char(self, input_text):
         """validation function to ensure only one character is entered
@@ -375,7 +331,6 @@ class MainGameLogic(tk.Frame):
             return True
         else:
             return False
-
 
     def advance_focus(self, event, current_idx):
         """Moves the cursor to the next entry box and selects it (so it will overwrite the value already there if the
@@ -397,10 +352,8 @@ class MainGameLogic(tk.Frame):
         if keyPressed in {"BackSpace", "Delete", "Tab", "Shift_L", "Shift_R", "Left"}:
             # If it's one of these keys, do nothing and exit the function
             return
-
         # Get the current text in the entry
         current_text = self.layout.entry_input_values[current_idx].get()
-
         # If a character was entered (and it's not empty after deletion/backspace)
         # and it's a single character (ensures we don't advance on second char in same box if width > 1)
         # and we are not on the last entry
@@ -409,7 +362,6 @@ class MainGameLogic(tk.Frame):
             self.layout.entry_boxes[current_idx + 1].focus_set()
             # Select the text in the next box for easy overwriting
             self.layout.entry_boxes[current_idx + 1].selection_range(0, tk.END)
-
 
     def regress_focus(self, event, current_idx):
         """Moves the cursor to the previous box (if it exists) and selects it (so it will overwrite the value already there if the
@@ -423,7 +375,6 @@ class MainGameLogic(tk.Frame):
             self.layout.entry_boxes[current_idx - 1].focus_set()
             # select the entry (so that it will be over-written)
             self.layout.entry_boxes[current_idx - 1].selection_range(0, tk.END)
-
 
     def submit_entry(self, event, current_idx):
         """If the user presses enter we will now attempt to handle the full entry
@@ -447,12 +398,10 @@ class MainGameLogic(tk.Frame):
             guess_red = int(f"{self.layout.entry_boxes[0].get()}{self.layout.entry_boxes[1].get()}", 16)
             guess_green = int(f"{self.layout.entry_boxes[2].get()}{self.layout.entry_boxes[3].get()}", 16)
             guess_blue = int(f"{self.layout.entry_boxes[4].get()}{self.layout.entry_boxes[5].get()}", 16)
-           
             #Calculate the error margins for each colour
             difference_red = guess_red - self.target_red
             difference_green = guess_green - self.target_green
             difference_blue = guess_blue - self.target_blue
-
             #We give different "hints" based on difficulty selected
             if (self.difficulty == DIFFICULTY_STANDARD):
                 error_margin_red = self.error_margin_indicator(difference_red)
@@ -462,19 +411,14 @@ class MainGameLogic(tk.Frame):
                 error_margin_red = self.get_sign(difference_red)
                 error_margin_green = self.get_sign(difference_green)
                 error_margin_blue = self.get_sign(difference_blue)
-
             self.update_score(difference_red,difference_green,difference_blue)
-
             #Move everything in the answer grid down 1, append the latest answer to the grid
             self.update_guess_grid(self.layout.entry_boxes, error_margin_red, error_margin_green, error_margin_blue)
-
             #update their guess colour on the canvas
             guessed_colour = "#"
             for digit in self.layout.entry_boxes:
                 guessed_colour = guessed_colour + f"{digit.get()}"
-            
             self.update_guess_box(guessed_colour)   
-
             # Are all the entries correct? If so, game over. Put up a congratulations message, does it qualify as a high score, if so, 
             # in the congrats message have an entry box to enter your name, then save the high scores back
             game_over = False
@@ -496,7 +440,6 @@ class MainGameLogic(tk.Frame):
                 else:
                     self.master.master.show_menu_screen()
                 return
-            
             #If you get here then the game is still going - clear the entered guesses and put the focus back into the first box
             # clear input fields for the next guess
             for var in self.layout.entry_input_values:
@@ -506,7 +449,6 @@ class MainGameLogic(tk.Frame):
             #Select all for easy overwriting
             self.layout.entry_boxes[0].selection_range(0, tk.END)
 
-
     def validate_entries(self):
         """Checks to see if there is an enrty in each box (you can't submit an entry only half done!)"""
         for entry_box in self.layout.entry_input_values:
@@ -514,7 +456,6 @@ class MainGameLogic(tk.Frame):
             if not content: 
                 return False
         return True    
-       
    
     def update_guess_grid(self, entry_boxes, error_margin_red, error_margin_green, error_margin_blue):
         """Adds the submitted guess to the previous guesses but adding it in the first position, 
@@ -526,10 +467,8 @@ class MainGameLogic(tk.Frame):
         guess_line_values = [error_margin_red, error_margin_green, error_margin_blue] # Add the error margins
         for hex_digit in entry_boxes:   # Add each hex digit
             guess_line_values.append(hex_digit.get())
-
         # Insert the latest guess into the first position of the list that contains the previous guesses
         self.list_of_guess_line_values.insert(0, guess_line_values) 
-
         # Add in the error margin hints and the guessed hex digits
         for i in range(min(len(self.list_of_guess_line_values), MAX_ALLOWED_GUESSES)):
             guessLineStructure = self.layout.guessGridStructure[i]
@@ -538,7 +477,6 @@ class MainGameLogic(tk.Frame):
                 guessLineStructure[j]['text'] = self.error_margin_symbols(self.list_of_guess_line_values[i][j])
             for j in range(HEX_LENGTH):
                 guessLineStructure[j+3].set(self.list_of_guess_line_values[i][j+3])   
-        
                   
     def error_margin_indicator(self, number):
         """Calculates the "error" in the player's guess to give a hint as to how far out their guess is
@@ -563,7 +501,6 @@ class MainGameLogic(tk.Frame):
                 margin = margin - 1
         return margin
 
-
     def error_margin_symbols(self, number):
         """ Draws the arrows left or right as a hint to the player how far out they are
             number is an integer, indicating error
@@ -579,7 +516,6 @@ class MainGameLogic(tk.Frame):
                 symbol = symbol + "<"
         return symbol    
 
-
     def update_score(self, error_margin_red, error_margin_green, error_margin_blue):
         """The score is not displayed, but is used to determin the high score charts.
             Most weight is given to the initial guesses, since each subsequent guess is easier.
@@ -588,7 +524,6 @@ class MainGameLogic(tk.Frame):
         average_error = (abs(error_margin_red) + abs(error_margin_green) + abs(error_margin_blue)) / 3
         self.score = ((255 - average_error)/255) * self.score 
         self.accuracy = round((int(self.score)/255)*100, 2)
-
 
     def get_sign(self, value):
         """ Is the value less than, great than, or equal to zero
@@ -600,7 +535,6 @@ class MainGameLogic(tk.Frame):
             return -1
         else:
             return 0    
-            
 
     def get_lowest_score_for_difficulty(self):
         """Find the lowest score for the difficult - used to determine whether a winning game is good enough to make the charts"""
@@ -635,11 +569,9 @@ class PlayGame(tk.Frame):
         #Stretch the grid to cover the window
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
-        
         #Initialise the layout
         self.layout = MainGameLayout(self)
         self.layout.grid(row=0, column=0, sticky="nsew")  # Make layout visible
-        
         # Pass the layout to the game logic
         self.logic = MainGameLogic(self, self.layout)
 
@@ -652,13 +584,10 @@ class HelpScreen(tk.Frame):
     def __init__(self, master):
         super().__init__(master, bg="white")
         self.master = master # reference to the main application
-
         # configure grid for centering buttons within this frame
         self.grid_rowconfigure(0, weight=0) # for buttons - minimise to the top
         self.grid_rowconfigure(1, weight=1) # for help text - maximimise to fill the rest of the frame
-       
         self.grid_columnconfigure(0, weight=1) # fill the width of the frame
-
         # back button
         back_button = tk.Button(self, text="Back",
                                  font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
@@ -666,7 +595,6 @@ class HelpScreen(tk.Frame):
                                  width=15, relief="raised", bd=2,
                                  command=self.master.show_menu_screen)
         back_button.grid(row=4, column=0, pady=(10, 20), sticky="n")
-
         self.text_area = scrolledtext.ScrolledText(
             self,
             # Wrap words at the window boundary
@@ -681,15 +609,12 @@ class HelpScreen(tk.Frame):
             column=0,      
             sticky="nsew", 
         )
-
         # Configure tags for various styles
         self.configure_tags()               
         # Load and parse the file
         self.load_and_display_text(HELP_TEXT_FILE)
-
         # Make the text area read-only after loading
         self.text_area.config(state=tk.DISABLED)
-
         # Button to trigger opening the HTML file
         more_information_button = tk.Button(self, text="More Information",
                             command=lambda: self.open_html_in_browser(HTML_FILE_TO_OPEN),
@@ -699,13 +624,11 @@ class HelpScreen(tk.Frame):
                             ) 
         more_information_button.grid(row=2, column=0, pady=(10, 20), sticky="s",)
 
-
     def configure_tags(self):
         """Define the tags we can use. At the moment it is just Heading tag, but we could add more later."""
         # Heading tag
         self.text_area.tag_config(TAG_HEADING, font=(FONT, 16, "bold"), foreground="navy", justify="center",spacing2=1, #Space between lines (if multiline)
                             spacing3=1)
-
  
     def load_and_display_text(self, file_name):
         """Go through each of the lines in the help.txt file, and determine if they have been tagged to be formatted in some way.
@@ -718,26 +641,20 @@ class HelpScreen(tk.Frame):
             # OPen the file read only
             with open(file_name, "r", encoding="utf-8") as help_file:
                 help_lines = help_file.readlines()
-
             for help_line in help_lines:
                 # remove trailing new line
                 help_line = help_line.strip('\n')
-
-
                 if help_line.startswith("#") and help_line.endswith("#"):
                     text = help_line.strip("#").strip() + "\n\n"    #Take away the markup
                     self.text_area.insert(tk.END, text, (TAG_HEADING,))  #Add  it t o the text area as a Heading
                     continue # Break out of the for loop, because we have now finished proceessing this line
-  
-                self.text_area.insert(tk.END, help_line) #If we got here then there was no markup so just add the line 
+                  self.text_area.insert(tk.END, help_line) #If we got here then there was no markup so just add the line 
                 self.text_area.insert(tk.END, "\n") # Add newline after each processed line
-
         # If the file doesn't exist, or there is some other error, then we will catch it here
         except FileNotFoundError:
             messagebox.showerror("Error", f"File not found: {file_name}")
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {e}")
-
 
     def open_html_in_browser(self, html_file_name):
         """
@@ -748,14 +665,12 @@ class HelpScreen(tk.Frame):
         """
         html_help_file_dir = os.path.dirname(__file__) # os.path.dirname(__file__) gets the directory of the app
         html_file_path = os.path.join(html_help_file_dir, html_file_name) # os.path.join combines the directory with the filename
-
         # Check if the HTML file actually exists
         if not os.path.exists(html_file_path):
             messagebox.showerror("File Not Found",
                                 f"The HTML help file '{html_file_name}' was not found at:\n{html_file_path}\n"
                                 "Please ensure it's in the same directory as this app.")
             return
-
         try: #We use try, so if something goes wrong we don't crash the whole app.
             # Use 'file:///' prefix for local files to ensure they open correctly
             webbrowser.open(f"file:///{html_file_path}")
@@ -770,13 +685,10 @@ class HighScoreScreen(tk.Frame):
     def __init__(self, master):
         super().__init__(master, bg="white")
         self.master = master # reference to the main application
-
         # configure grid for centering buttons within this frame
         self.grid_rowconfigure(0, weight=0) # for buttons - minimise to the top
         self.grid_rowconfigure(1, weight=1) # for help text - maximimise to fill the rest of the frame
-       
         self.grid_columnconfigure(0, weight=1) # fill the width of the frame
-
         # back button
         back_button = tk.Button(self, text="Back",
                                  font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
@@ -784,14 +696,10 @@ class HighScoreScreen(tk.Frame):
                                  width=15, relief="raised", bd=2,
                                  command=self.master.show_menu_screen)
         back_button.grid(row=4, column=0, pady=(10, 20), sticky="n")
-
-
         # frame to hold difficulty buttons for better layout
         self.scores_frame = tk.Frame(self, bg="white")
         self.scores_frame.grid(row=1, column=0, pady=20)
-
         self.load_and_display_scores()
-
 
     def load_and_display_scores(self):
         """
@@ -810,7 +718,6 @@ class HighScoreScreen(tk.Frame):
         except IOError as e:
             messagebox.showerror("File Error", f"An error occurred while reading the High Score file: {e}")
             return
-
         # Start grid layout from the top
         row_counter = 1
         for difficulty, players in high_score_data.items():
@@ -818,22 +725,18 @@ class HighScoreScreen(tk.Frame):
             difficulty_label = tk.Label(self.scores_frame, text=f"{difficulty.capitalize()} ", font=(FONT, 26, "bold"), bg="white")
             difficulty_label.grid(row=row_counter, column=0, columnspan=2, pady=(15, 5))
             row_counter += 1
-
             # Create header labels for the columns
             player_header = tk.Label(self.scores_frame, text="Player Name", font=(FONT, 20, "bold"), bg="white")
             player_header.grid(row=row_counter, column=0, padx=10, pady=2, sticky="w")
             score_header = tk.Label(self.scores_frame, text="Score", font=(FONT, 20, "bold"), bg="white")
             score_header.grid(row=row_counter, column=1, padx=10, pady=2, sticky="w")
             row_counter += 1
-            
             # Display the scores for each player
             for player in players:
                 player_name_label = tk.Label(self.scores_frame, text=player["player_name"], font=(FONT, 18, "bold"), bg="white")
                 player_name_label.grid(row=row_counter, column=0, padx=10, pady=2, sticky="w")
-                
                 score_label = tk.Label(self.scores_frame, text=player["score"], font=(FONT, 18, "bold"), bg="white")
                 score_label.grid(row=row_counter, column=1, padx=10, pady=2, sticky="w")
-                
                 row_counter += 1
 
 
@@ -842,22 +745,18 @@ class MenuScreen(tk.Frame):
     def __init__(self, master):
         super().__init__(master, bg="white")
         self.master = master # reference to the main application
-
         # configure grid for centering buttons within this frame
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=0) # for buttons
         self.grid_rowconfigure(2, weight=0) # for buttons
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
-
         # title Label
         self.photo = PhotoImage(file="hexaguessa.png")
         # resize to 1/4 of original image size
         self.photo = self.photo.subsample(4)
         title_label = tk.Label(self, image=self.photo, bg="white")
-
         title_label.grid(row=0, column=0, pady=(10, 20), sticky="ns") # padded at top, sticks between north/south
-
         # new game button
         new_game_button = tk.Button(self, text="New Game",
                                      font=(FONT, 20), bg="darkolivegreen3", fg="black",
@@ -865,8 +764,6 @@ class MenuScreen(tk.Frame):
                                      width=12, height=2, relief="raised", bd=4,
                                      command=self.master.show_new_game_screen)
         new_game_button.grid(row=1, column=0, pady=10)
-
-
         # highscores button
         highscores_button = tk.Button(self, text="Leaderboard",
                                      font=(FONT, 20), bg="goldenrod3", fg="black",
@@ -874,8 +771,6 @@ class MenuScreen(tk.Frame):
                                      width=12, height=1, relief="raised", bd=4,
                                      command=self.master.show_high_score_screen)
         highscores_button.grid(row=2, column=0, pady=10, sticky="n")
-
-
         # help button
         help_button = tk.Button(self, text="Help",
                                      font=(FONT, 20), bg="steelblue3", fg="black",
@@ -883,8 +778,6 @@ class MenuScreen(tk.Frame):
                                      width=12, height=1, relief="raised", bd=4,
                                      command=self.master.show_help_screen)
         help_button.grid(row=3, column=0, pady=10, sticky="n")
-
-
         #exit game button
         exit_game_button = tk.Button(self, text="Exit",
                                      font=(FONT, 20), bg="coral1", fg="black",
@@ -899,17 +792,14 @@ class NewGameScreen(tk.Frame):
     def __init__(self, master):
         super().__init__(master, bg="white")
         self.master = master
-
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=0) # difficulty buttons
         self.grid_rowconfigure(4, weight=0) # back button
         self.grid_rowconfigure(5, weight=1)
         self.grid_columnconfigure(0, weight=1)
-
         # frame to hold difficulty buttons for better layout
         difficulty_buttons_frame = tk.Frame(self, bg="white")
         difficulty_buttons_frame.grid(row=3, column=0, pady=20)
-
         # Standard Game Button
         standard_button = tk.Button(difficulty_buttons_frame, text=DIFFICULTY_STANDARD,
                                      font=(FONT, 16), bg=DEFAULT_BUTTON_COLOUR, fg="black",
@@ -917,7 +807,6 @@ class NewGameScreen(tk.Frame):
                                      width=10, height=1, relief="raised", bd=3,
                                      command=lambda: self.master.show_game(DIFFICULTY_STANDARD))
         standard_button.pack(side=tk.LEFT, padx=10)
-
         # Expert Game Button
         expert_button = tk.Button(difficulty_buttons_frame, text=DIFFICULTY_EXPERT,
                                      font=(FONT, 16), bg=DEFAULT_BUTTON_COLOUR, fg="black",
@@ -925,7 +814,6 @@ class NewGameScreen(tk.Frame):
                                      width=10, height=1, relief="raised", bd=3,
                                      command=lambda: self.master.show_game(DIFFICULTY_EXPERT))
         expert_button.pack(side=tk.LEFT, padx=10)
-
         # back button
         back_button = tk.Button(self, text="Back",
                                  font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
@@ -944,38 +832,30 @@ class EnterHighScoreScreen(tk.Frame):
         self.master = master # reference to the main application
         self.difficulty = master.difficulty # Set the difficulty level for the game
         self.new_score = new_score
-
         #to center everything
         central_frame = tk.Frame(self, bg="white")
         central_frame.pack(expand=True, padx=20, pady=20)
-
         central_frame.grid_columnconfigure(0, weight=1)
         for i in range(6):
             central_frame.grid_rowconfigure(i, weight=1)
-
         high_score_label = tk.Label(central_frame, text="You got a High Score!",
                                     font=(FONT, 20), bg="white")
         high_score_label.grid(row=0, column=0, pady=(0, 20), sticky='s')
-
         difficulty_label = tk.Label(central_frame, text=f"Difficulty: {self.difficulty.capitalize()}",
                                     font=(FONT, 15), bg="white")
         difficulty_label.grid(row=1, column=0, pady=5, sticky='n')
-
         score_label = tk.Label(central_frame, text=f"Score: {self.new_score}",
                                font=(FONT, 15), bg="white")
         score_label.grid(row=2, column=0, pady=(5, 20), sticky='n')
-
         enter_name_label = tk.Label(central_frame, text="Enter name:",
                                     font=(FONT, 15), bg="white")
         enter_name_label.grid(row=3, column=0, pady=5, sticky='n')
-
         self.player_name_text = tk.StringVar()
         self.player_name_text.set("")
         player_name = tk.Entry(central_frame, textvariable=self.player_name_text,
                                width=20, font=(FONT, 20), justify='center')
         player_name.grid(row=4, column=0, pady=10, ipady=5, sticky='n')
         player_name.focus_set()
-
         # submit button
         submit_button = tk.Button(central_frame, text="Submit",
                                  font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
@@ -983,7 +863,6 @@ class EnterHighScoreScreen(tk.Frame):
                                  width=15, relief="raised", bd=2,
                                  command=self.update_scores)
         submit_button.grid(row=5, column=0, pady=(20, 0), sticky="n")
-
 
     def read_scores(self,high_score_filename):
         """ Load scores from the high score JSON file
@@ -1006,37 +885,29 @@ class EnterHighScoreScreen(tk.Frame):
                 DIFFICULTY_STANDARD: [],
                 DIFFICULTY_EXPERT: []
             }
-
    
     def update_scores(self):
         """ Update the JSON file with new player's data. """
         # Read the current scores from the file
         all_scores = self.read_scores(HIGH_SCORE_FILE)
-
         # Check if the difficulty level exists in the data
         if self.difficulty not in all_scores:
             print(f"Difficulty level '{self.difficulty}' not found. Skipping update.")
             return
-        
         # Create a dictionary for the new score entry
         new_score_entry = {
             'player_name': self.player_name_text.get(),
             'score': self.new_score
         }
-        
         # Append to the scores list
         all_scores[self.difficulty].append(new_score_entry)
-
         #Sort the scores list (for this difficulty) by score
         all_scores[self.difficulty] = sorted(all_scores[self.difficulty], reverse=True, key=lambda x: x['score'])
-
         # Keep all but 3 scores for this difficulty
         all_scores[self.difficulty] = all_scores[self.difficulty][:3]
-        
         # Save back to JSON file
         with open(HIGH_SCORE_FILE, 'w') as file:
             json.dump(all_scores, file, indent=4)
-
         self.master.show_high_score_screen()  
 
 
