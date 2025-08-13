@@ -704,20 +704,20 @@ class HighScoreScreen(tk.Frame):
         row_counter = 1
         for difficulty, players in high_score_data.items():
             # Create a label for the difficulty level spanning two columns
-            difficulty_label = tk.Label(self.scores_frame, text=f"{difficulty.capitalize()} ", font=(LEADERBOARD_FONT, 26, "bold"), bg="white")
+            difficulty_label = tk.Label(self.scores_frame, text=f"{difficulty.capitalize()} ", font=(DEFAULT_FONT, 26, "bold"), bg="white")
             difficulty_label.grid(row=row_counter, column=0, columnspan=2, pady=(15, 5))
             row_counter += 1
             # Create header labels for the columns
-            player_header = tk.Label(self.scores_frame, text="Player Name", font=(LEADERBOARD_FONT, 20, "bold"), bg="white")
+            player_header = tk.Label(self.scores_frame, text="Player Name", font=(DEFAULT_FONT, 20, "bold"), bg="white")
             player_header.grid(row=row_counter, column=0, padx=10, pady=2, sticky="w")
-            score_header = tk.Label(self.scores_frame, text="Score", font=(LEADERBOARD_FONT, 20, "bold"), bg="white")
+            score_header = tk.Label(self.scores_frame, text="Score", font=(DEFAULT_FONT, 20, "bold"), bg="white")
             score_header.grid(row=row_counter, column=1, padx=10, pady=2, sticky="w")
             row_counter += 1
             # Display the scores for each player
             for player in players:
-                player_name_label = tk.Label(self.scores_frame, text=player["player_name"], font=(LEADERBOARD_FONT, 18, "bold"), bg="white")
+                player_name_label = tk.Label(self.scores_frame, text=player["player_name"], font=(DEFAULT_FONT, 18, "bold"), bg="white")
                 player_name_label.grid(row=row_counter, column=0, padx=10, pady=2, sticky="w")
-                score_label = tk.Label(self.scores_frame, text=player["score"], font=(LEADERBOARD_FONT, 18, "bold"), bg="white")
+                score_label = tk.Label(self.scores_frame, text=player["score"], font=(DEFAULT_FONT, 18, "bold"), bg="white")
                 score_label.grid(row=row_counter, column=1, padx=10, pady=2, sticky="w")
                 row_counter += 1
 
@@ -897,13 +897,18 @@ class EnterHighScoreScreen(tk.Frame):
 
     def validate_player_name(self, player_name):
         # Check if the player_name contains only alphabetic characters
-        if player_name.isalpha() or player_name == "":  # Allow empty string for backspace/delete
+        # Regular expression to allow letters, numbers, spaces, and underscores.
+        # The pattern r'^[a-zA-Z0-9_ ]*$' checks for:
+        # ^ : start of the string
+        # [a-zA-Z0-9_ ] : any character that is a letter (upper or lowercase), a number, an underscore, or a space
+        # * : zero or more of the preceding characters
+        # $ : end of the string
+        if re.match(r'^[a-zA-Z0-9_ ]*$', player_name):
             # Check if the length is too long
-            max_length = 20  # Set your desired maximum length
+            max_length = 20 # Maximum length
             if len(player_name) <= max_length:
-                return True  # Allow the input
-        return False  # Reject the input   
-
+                return True # Allow the input
+        return False # Reject the input
 
 # run game
 if __name__ == "__main__":
