@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hex Codes</title>
+  </head>
+  <body>
+    <h1>Hex Codes</h1>
+    <img src="venhex.gif" alt="Venn Diagram RGB">
+    <p>Look at the red, green, and blue values as you change the colour here</p>
+
+    <label for="colors">Click this box:</label>
+    <input type="color" list="mainValues" id="colors" />
+    <datalist id="mainValues">
+      <option value="#FF0000"></option>
+      <option value="#00FF00"></option>
+      <option value="#0000FF"></option>
+    </datalist>
+
+
+    <details name="How">
+        <summary>How Hex colour Codes Work</summary>
+        <pre>
+With paint, you can make any colour out of red, yellow, and blue, apart from values of white and black.
+With light, you can make any colour out of red, green, and blue.
+If the intensity for all three values is maximum, you get white. If the intensity for all three values is zero, you get black.            
+        </pre>
+      </details>
+      <details name="What">
+        <summary>What is a Hex Code?</summary>
+        <pre>
+A hex code uses six symbols to tell the computer how much red, green, and blue you want in your colour:
+The first two are for red, the next two are for green, and the last two are for blue.
+A hex code looks like this: #RRGGBB            
+        </pre>
+      </details>
+      <details name="counting">
+        <summary>Counting with Hex Codes</summary>
+        <pre>
+Instead of counting:
+00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15...
+We count:
+00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 0A, 0B, 0C, 0D, 0E, 0F
+A means 10, B is 11, C is 12… …F is 15
+After 0F (15), the next number is 10 (which means 16 in regular numbers)
+        </pre>
+      </details>
+      <details name="reading">
+        <summary>How Do You Read a Hex Value?</summary>
+        <pre>
+Each pair (like A5) is one colour's amount:
+The first digit tells you how many groups of 16 you have (because hex counts in groups of 16).
+The second digit tells you how many extra ones you have.
+Example:
+A5: A stands for 10, so it's (10 groups of 16) + 5
+When you see bigger letters or numbers at the start of a pair, that's a much bigger number! If you see letters like "A" or "F" at the start, that's a lot of that colour.            
+        </pre>
+      </details>
+      <details name="guessing">
+        <summary>Guessing a colour from a Hex Code</summary>
+        <pre>
+If the red pair is high, the colour will be more red.
+If the green pair is high, the colour will be more green.
+If the blue pair is high, the colour will be more blue.
+If all the pairs are low (like 00), the colour is dark (black).
+If all the pairs are high (like FF), the colour is very bright (white).
+If you see:
+    00 = none of that colour
+    FF = lots and lots of that colour
+    In-between numbers or letters mean a medium amount
+If only one colour has a big number, you see a strong version of that colour. If two are big, you see a mix (like red and blue make purple).            
+        </pre>
+      </details>
+      <details name="combining">
+        <summary>Putting Hexadecimals in order and comparing</summary>
+        <pre>
+Mixing colours in hex codes is not the same as mixing colours in paint. Instead, we think of the combination of colours like light.
+For example, mixing equal amounts of red and green together will result in the colour that is between the two on the colour spectrum, which is yellow.
+Some notes on common color combinations are provided below:
+  > Pure Red, Green, or Blue → turn up that color, leaving the other two at 0.
+  > All at 255 (full saturation of all colors) → White
+  > All at 0 (no color) → Black
+  > Equal saturations of each → Gray
+  > Red + Blue → Purple
+  > Red + Green → Yellow
+  > Green + Blue → Turquoise
+  > Dark yellow → make yellow, then reduce both red and green
+  > Orange → make yellow, but more red, less green
+        </pre>
+      </details>
+      <details name="comparing">
+        <summary>Counting with Hex Codes</summary>
+        <pre>
+Just remember:
+    Numbers and letters close to “F” or “E” are big.
+    Ones with “0” at the start are small.
+    Look at the first digit to see which is bigger; if they're the same, check the second digit!
+So, if you remember:
+    Hex pairs = how much of each colour light.
+    Higher letters/numbers = more of that colour.
+    Hex counts funny: 0, 1, 2, ... 9, A, B, C, D, E, F, 10, 11, ...
+You’ll be ready to figure out which colour is which just by looking at the hex code!            
+        </pre>
+      </details>
+      <details name="resources">
+        <summary>Resources</summary>
+        <p>Interactables</p>
+        <a href="https://mktg.bygeo.biz/rgb_sliders.html">Colours Toy</a>
+        <br>
+        <a href="http://www.cknuckles.com/rgbsliders.html">RGB Sliders</a>
+        <br>
+        <a href="https://www.csfieldguide.org.nz/en/interactives/rgb-mixer/">RGB Colour Mixer (switch between decimal and hexadecimal)</a>
+        <p>Tutorials</p>
+        <a href="https://learn.sparkfun.com/tutorials/hexadecimal/all">Introduction to Hexadecimal</a>
+      </details>
+
+  </body>
+</html>

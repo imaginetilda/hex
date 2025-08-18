@@ -1,0 +1,21 @@
+#How To Play#
+You will have 8 tries to correctly guess the hex code of the colour displayed on screen in the “Target Colour” box. After each guess, your last guess will be displayed in the “Your Guess” box.
+
+After each guess, you'll receive clues for each individual color value: red, green, and blue.
+A > symbol means the correct value for that specific color value is higher, while a < symbol means it's lower.
+Use these indicators for each color to refine your next guess.
+
+
+#Standard Mode#
+The number of indicator arrows is based on how far from the actual hexadecimal you are, in base 2.
+For example, one arrow "<" means you are a decimal of two or less out, two arrows mean you are more than two out, but four or less out.
+
+No. arrows: x = how many decimals out you are
+1 : x<2
+2 : 2<x<4
+3 : 4<x<8
+4 : 8<x<16
+5 : 16<x<32
+
+#Expert Mode#
+Only one indicator arrow will be output, either more than (>) or less than (<)
