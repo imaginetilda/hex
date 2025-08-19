@@ -37,8 +37,7 @@ DIFFICULTY_EXPERT = "Expert"
 DEFAULT_BUTTON_COLOUR = "light blue"
 DEFAULT_ACTIVE_BUTTON_COLOUR = "dark blue"
 # Font
-DEFAULT_FONT = "Arial Rounded MT Bold"
-LEADERBOARD_FONT = "Small Fonts"
+FONT = "Arial Rounded MT Bold"
 
 import json
 import math
@@ -146,15 +145,15 @@ class MainGameLayout(tk.Frame):
             var = tk.StringVar()
             self.entry_input_values.append(var)
             # Create the Entry widget, ie the each box where you enter your guess
-            entry = tk.Entry(self, textvariable=var, width=2, font=(DEFAULT_FONT, 25))
+            entry = tk.Entry(self, textvariable=var, width=2, font=(FONT, 25))
             entry.grid(row=3, column=i+1, padx=5, pady=2, sticky='ew')
             self.entry_boxes.append(entry)
         # main manu button, so we can quit the game at any point
         self.main_menu_button = tk.Button(self, text="Main Menu",
-                                 font=(DEFAULT_FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
+                                 font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
                                  activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR, activeforeground="white",
                                  width=15, relief="raised", bd=2,
-                                 command=self.master.master.show_menu_screen)
+                                 command=self.return_to_main_menu)
         self.main_menu_button.grid(row=(MAX_ALLOWED_GUESSES * 2) + 5, column=2, columnspan=HEX_LENGTH-2, pady=(10, 20), sticky="n")
 
     def create_canvas(self):
@@ -184,7 +183,7 @@ class MainGameLayout(tk.Frame):
         if text_y < 0: # Ensure text is not drawn off-canvas top edge
             text_y = 15 # Default to 15 pixels from canvas top if it would go off
         self.colour_canvas.create_text(text_x, text_y, text="Target Colour",
-                                      font=(DEFAULT_FONT, 14), fill="black")
+                                      font=(FONT, 14), fill="black")
 
     def create_guess_box(self):
         """ Create a square area containing the previous guess's colour. Set to default on creation. """
@@ -206,7 +205,7 @@ class MainGameLayout(tk.Frame):
         if text_y < 0: # Ensure text is not drawn off-canvas top edge
             text_y = 15 # Default to 15 pixels from canvas top if it would go off
         self.colour_canvas.create_text(text_x, text_y, text="Your Guess",
-                                      font=(DEFAULT_FONT, 14), fill="black")
+                                      font=(FONT, 14), fill="black")
 
     def create_guess_grid(self):
         """This is where we display the previous guesses and the hints if it's too high or too low"""
@@ -230,11 +229,18 @@ class MainGameLayout(tk.Frame):
                 entryText = tk.StringVar()
                 entryText.set("")
                 # Create the Entry widget
-                guessElement = tk.Entry(self, textvariable=entryText, state="disabled", width=2, font=(DEFAULT_FONT, 25))
+                guessElement = tk.Entry(self, textvariable=entryText, state="disabled", width=2, font=(FONT, 25))
                 guessElement.grid(row=(2*i)+5, column=j+1, padx=5, pady=2, sticky='ew')
                 #We don't need to save the reference to the actual Entry, only to the reference of the entryText
                 guessLineStructure.append(entryText) 
             self.guessGridStructure.append(guessLineStructure)      
+
+    def return_to_main_menu(self):
+        messagebox_reply = messagebox.askokcancel("Return to Main Menu?", "Are you sure you want to quit this game?")
+        if messagebox_reply: # result is True if Yes, False if Cancel
+            self.master.master.show_menu_screen()
+        else:
+            return # Continue playing   
 
 
 class MainGameLogic(tk.Frame):
@@ -572,7 +578,7 @@ class HelpScreen(tk.Frame):
         self.grid_columnconfigure(0, weight=1) # fill the width of the frame
         # back button
         back_button = tk.Button(self, text="Back",
-                                 font=(DEFAULT_FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
+                                 font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
                                  activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR, activeforeground="white",
                                  width=15, relief="raised", bd=2,
                                  command=self.master.show_menu_screen)
@@ -581,7 +587,7 @@ class HelpScreen(tk.Frame):
             self,
             # Wrap words at the window boundary
             wrap=tk.WORD,
-            font=(DEFAULT_FONT, 12),
+            font=(FONT, 12),
             # padding within widget
             padx=10,       
             pady=10,       
@@ -600,7 +606,7 @@ class HelpScreen(tk.Frame):
         # Button to trigger opening the HTML file
         more_information_button = tk.Button(self, text="More Information",
                             command=lambda: self.open_html_in_browser(HTML_FILE_TO_OPEN),
-                            font=(DEFAULT_FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
+                            font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
                                  activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR, activeforeground="white",
                                  width=15, relief="raised", bd=2,
                             ) 
@@ -609,7 +615,7 @@ class HelpScreen(tk.Frame):
     def configure_tags(self):
         """Define the tags we can use. At the moment it is just Heading tag, but we could add more later."""
         # Heading tag
-        self.text_area.tag_config(TAG_HEADING, font=(DEFAULT_FONT, 16, "bold"), foreground="navy", justify="center",spacing2=1, #Space between lines (if multiline)
+        self.text_area.tag_config(TAG_HEADING, font=(FONT, 16, "bold"), foreground="navy", justify="center",spacing2=1, #Space between lines (if multiline)
                             spacing3=1)
  
     def load_and_display_text(self, file_name):
@@ -673,7 +679,7 @@ class HighScoreScreen(tk.Frame):
         self.grid_columnconfigure(0, weight=1) # fill the width of the frame
         # back button
         back_button = tk.Button(self, text="Back",
-                                 font=(DEFAULT_FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
+                                 font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
                                  activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR, activeforeground="white",
                                  width=15, relief="raised", bd=2,
                                  command=self.master.show_menu_screen)
@@ -704,20 +710,20 @@ class HighScoreScreen(tk.Frame):
         row_counter = 1
         for difficulty, players in high_score_data.items():
             # Create a label for the difficulty level spanning two columns
-            difficulty_label = tk.Label(self.scores_frame, text=f"{difficulty.capitalize()} ", font=(DEFAULT_FONT, 26, "bold"), bg="white")
+            difficulty_label = tk.Label(self.scores_frame, text=f"{difficulty.capitalize()} ", font=(FONT, 26, "bold"), bg="white")
             difficulty_label.grid(row=row_counter, column=0, columnspan=2, pady=(15, 5))
             row_counter += 1
             # Create header labels for the columns
-            player_header = tk.Label(self.scores_frame, text="Player Name", font=(DEFAULT_FONT, 20, "bold"), bg="white")
+            player_header = tk.Label(self.scores_frame, text="Player Name", font=(FONT, 20, "bold"), bg="white")
             player_header.grid(row=row_counter, column=0, padx=10, pady=2, sticky="w")
-            score_header = tk.Label(self.scores_frame, text="Score", font=(DEFAULT_FONT, 20, "bold"), bg="white")
+            score_header = tk.Label(self.scores_frame, text="Score", font=(FONT, 20, "bold"), bg="white")
             score_header.grid(row=row_counter, column=1, padx=10, pady=2, sticky="w")
             row_counter += 1
             # Display the scores for each player
             for player in players:
-                player_name_label = tk.Label(self.scores_frame, text=player["player_name"], font=(DEFAULT_FONT, 18, "bold"), bg="white")
+                player_name_label = tk.Label(self.scores_frame, text=player["player_name"], font=(FONT, 18, "bold"), bg="white")
                 player_name_label.grid(row=row_counter, column=0, padx=10, pady=2, sticky="w")
-                score_label = tk.Label(self.scores_frame, text=player["score"], font=(DEFAULT_FONT, 18, "bold"), bg="white")
+                score_label = tk.Label(self.scores_frame, text=player["score"], font=(FONT, 18, "bold"), bg="white")
                 score_label.grid(row=row_counter, column=1, padx=10, pady=2, sticky="w")
                 row_counter += 1
 
@@ -741,28 +747,28 @@ class MenuScreen(tk.Frame):
         title_label.grid(row=0, column=0, pady=(10, 20), sticky="ns") # padded at top, sticks between north/south
         # new game button
         new_game_button = tk.Button(self, text="New Game",
-                                     font=(DEFAULT_FONT, 20), bg="darkolivegreen3", fg="black",
+                                     font=(FONT, 20), bg="darkolivegreen3", fg="black",
                                      activebackground="darkolivegreen4", activeforeground="white",
                                      width=12, height=2, relief="raised", bd=4,
                                      command=self.master.show_new_game_screen)
         new_game_button.grid(row=1, column=0, pady=10)
         # highscores button
         highscores_button = tk.Button(self, text="Leaderboard",
-                                     font=(DEFAULT_FONT, 20), bg="goldenrod3", fg="black",
+                                     font=(FONT, 20), bg="goldenrod3", fg="black",
                                      activebackground="goldenrod4", activeforeground="white",
                                      width=12, height=1, relief="raised", bd=4,
                                      command=self.master.show_high_score_screen)
         highscores_button.grid(row=2, column=0, pady=10, sticky="n")
         # help button
         help_button = tk.Button(self, text="Help",
-                                     font=(DEFAULT_FONT, 20), bg="steelblue3", fg="black",
+                                     font=(FONT, 20), bg="steelblue3", fg="black",
                                      activebackground="steelblue4", activeforeground="white",
                                      width=12, height=1, relief="raised", bd=4,
                                      command=self.master.show_help_screen)
         help_button.grid(row=3, column=0, pady=10, sticky="n")
         #exit game button
         exit_game_button = tk.Button(self, text="Exit",
-                                     font=(DEFAULT_FONT, 20), bg="coral1", fg="black",
+                                     font=(FONT, 20), bg="coral1", fg="black",
                                      activebackground="coral3", activeforeground="white",
                                      width=12, height=1, relief="raised", bd=4,
                                      command=self.master.exit_game)
@@ -784,21 +790,21 @@ class NewGameScreen(tk.Frame):
         difficulty_buttons_frame.grid(row=3, column=0, pady=20)
         # Standard Game Button
         standard_button = tk.Button(difficulty_buttons_frame, text=DIFFICULTY_STANDARD,
-                                     font=(DEFAULT_FONT, 16), bg=DEFAULT_BUTTON_COLOUR, fg="black",
+                                     font=(FONT, 16), bg=DEFAULT_BUTTON_COLOUR, fg="black",
                                      activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR, activeforeground="white",
                                      width=10, height=1, relief="raised", bd=3,
                                      command=lambda: self.master.show_game(DIFFICULTY_STANDARD))
         standard_button.pack(side=tk.LEFT, padx=10)
         # Expert Game Button
         expert_button = tk.Button(difficulty_buttons_frame, text=DIFFICULTY_EXPERT,
-                                     font=(DEFAULT_FONT, 16), bg=DEFAULT_BUTTON_COLOUR, fg="black",
+                                     font=(FONT, 16), bg=DEFAULT_BUTTON_COLOUR, fg="black",
                                      activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR, activeforeground="white",
                                      width=10, height=1, relief="raised", bd=3,
                                      command=lambda: self.master.show_game(DIFFICULTY_EXPERT))
         expert_button.pack(side=tk.LEFT, padx=10)
         # back button
         back_button = tk.Button(self, text="Back",
-                                 font=(DEFAULT_FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
+                                 font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
                                  activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR, activeforeground="white",
                                  width=15, relief="raised", bd=2,
                                  command=self.master.show_menu_screen)
@@ -821,28 +827,28 @@ class EnterHighScoreScreen(tk.Frame):
         for i in range(6):
             central_frame.grid_rowconfigure(i, weight=1)
         high_score_label = tk.Label(central_frame, text="You got a High Score!",
-                                    font=(DEFAULT_FONT, 20), bg="white")
+                                    font=(FONT, 20), bg="white")
         high_score_label.grid(row=0, column=0, pady=(0, 20), sticky='s')
         difficulty_label = tk.Label(central_frame, text=f"Difficulty: {self.difficulty.capitalize()}",
-                                    font=(DEFAULT_FONT, 15), bg="white")
+                                    font=(FONT, 15), bg="white")
         difficulty_label.grid(row=1, column=0, pady=5, sticky='n')
         score_label = tk.Label(central_frame, text=f"Score: {self.new_score}",
-                               font=(DEFAULT_FONT, 15), bg="white")
+                               font=(FONT, 15), bg="white")
         score_label.grid(row=2, column=0, pady=(5, 20), sticky='n')
         enter_name_label = tk.Label(central_frame, text="Enter name:",
-                                    font=(DEFAULT_FONT, 15), bg="white")
+                                    font=(FONT, 15), bg="white")
         enter_name_label.grid(row=3, column=0, pady=5, sticky='n')
         self.player_name_text = tk.StringVar()
         self.player_name_text.set("")
         validate_player_name  = self.register(self.validate_player_name)
         player_name = tk.Entry(central_frame, textvariable=self.player_name_text,
-                               width=20, font=(DEFAULT_FONT, 20), justify='center')
+                               width=20, font=(FONT, 20), justify='center')
         player_name.config(validate='key', validatecommand=(validate_player_name, '%P'))
         player_name.grid(row=4, column=0, pady=10, ipady=5, sticky='n')
         player_name.focus_set()
         # submit button
         submit_button = tk.Button(central_frame, text="Submit",
-                                 font=(DEFAULT_FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
+                                 font=(FONT, 14), bg=DEFAULT_BUTTON_COLOUR, fg="black",
                                  activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR, activeforeground="white",
                                  width=15, relief="raised", bd=2,
                                  command=self.update_scores)
@@ -905,10 +911,11 @@ class EnterHighScoreScreen(tk.Frame):
         # $ : end of the string
         if re.match(r'^[a-zA-Z0-9_ ]*$', player_name):
             # Check if the length is too long
-            max_length = 20 # Maximum length
+            max_length = 20  # Set your desired maximum length
             if len(player_name) <= max_length:
-                return True # Allow the input
-        return False # Reject the input
+                return True  # Allow the input
+        return False  # Reject the input   
+
 
 # run game
 if __name__ == "__main__":
