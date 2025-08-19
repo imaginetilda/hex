@@ -160,46 +160,47 @@ class MainGameLayout(tk.Frame):
             entry = tk.Entry(self,
                              textvariable=var,
                              width=2,
-                             font=(FONT,25)
+                             font=(FONT, 25)
                             )
             entry.grid(row=3, column=i+1, padx=5, pady=2, sticky='ew')
             self.entry_boxes.append(entry)
         # main manu button, so we can quit the game at any point
         self.main_menu_button = tk.Button(self,
-                                    text="Main Menu",
-                                    font=(FONT, 14),
-                                    bg=DEFAULT_BUTTON_COLOUR,
-                                    fg="black",
-                                    activebackground=DEFAULT_ACTIVE_BUTTON_COLOUR,
-                                    activeforeground="white",
-                                    width=15,
-                                    relief="raised",
-                                    bd=2,
-                                    command=self.return_to_main_menu)
+                                        text="Main Menu",
+                                        font=(FONT, 14),
+                                        bg=DEFAULT_BUTTON_COLOUR,
+                                        fg="black",
+                                        activebackground=\
+                                            DEFAULT_ACTIVE_BUTTON_COLOUR,
+                                        activeforeground="white",
+                                        width=15,
+                                        relief="raised",
+                                        bd=2,
+                                        command=self.return_to_main_menu)
         self.main_menu_button.grid(row=(MAX_ALLOWED_GUESSES * 2) + 5,
-                                    column=2,
-                                    columnspan=HEX_LENGTH-2,
-                                    pady=(10, 20),
-                                    sticky="n")
+                                column=2,
+                                columnspan=HEX_LENGTH-2,
+                                pady=(10, 20),
+                                sticky="n")
 
     def create_canvas(self):
         """Create the area that contains squares containing the
-            squares of the target colour and the previous guess's colour
+        squares of the target colour and the previous guess's colour
         """
         colour_canvas = tk.Canvas(self,
-                                width=CANVAS_WIDTH,
-                                height=CANVAS_HEIGHT,
-                                bg="white",
-                                highlightbackground="black",
-                                highlightthickness=2)
+                                    width=CANVAS_WIDTH,
+                                    height=CANVAS_HEIGHT,
+                                    bg="white",
+                                    highlightbackground="black",
+                                    highlightthickness=2)
         # Position the canvas with a blank column to the left in order
         # to centre correctly with the guessed grid
         colour_canvas.grid(row=0,
-                            column=1,
-                            columnspan = HEX_LENGTH + 0,
-                            padx=5,
-                            pady=10,
-                            sticky='w')
+                    column=1,
+                    columnspan=HEX_LENGTH + 0,
+                    padx=5,
+                    pady=10,
+                    sticky='w')
         return colour_canvas
 
     def create_target_box(self):
@@ -210,7 +211,7 @@ class MainGameLayout(tk.Frame):
         # and (x2, y2) is the bottom-right corner
         # The 'fill' option sets the solid colour
         # The 'outline' option sets the border colour
-          
+
         # Calculate coordinates to center the target box on the
         # LEFT HALF of the canvas
         x1 = (CANVAS_WIDTH / 2 - COLOUR_BOX_WIDTH) / 2
